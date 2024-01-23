@@ -29,12 +29,27 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
+/**
+ * Klasa obsługująca wybór bazy danych z hasłami (konta użytkownika) z GUI
+ * Ekran domowy
+ */
 public class DatabaseSelectorController implements Initializable {
 
+    /**
+     * Tablica z dostępnymi bazami danych
+     */
     @FXML
     private TableView<DatabaseRecord> databaseTable;
+
+    /**
+     * Kolumna tabeli ze ścieżką do pliku bazy danych
+     */
     @FXML
     private TableColumn<DatabaseRecord, String> pathCol;
+
+    /**
+     * Kolumna tabeli z nazwą bazy danych
+     */
     @FXML
     private TableColumn<DatabaseRecord, String> nameCol;
 
@@ -57,10 +72,18 @@ public class DatabaseSelectorController implements Initializable {
 
         update();
     }
+
+    /**
+     * Pobiera pamiętane lokalne bazy danych z configu
+     */
     private void update() {
         databaseTable.getItems().setAll(config.getDatabases());
     }
 
+    /**
+     * Funkcja do otwierania okna tworzenia nowej bazy danych po kliknięciu przycisku "CREATE"
+     * @param actionEvent event wywołujący funkcję (kliknięcie CREATE) [ActionEvent]
+     */
     @FXML
     private void onCreateDatabaseClick(ActionEvent actionEvent) {
         try {
@@ -69,10 +92,16 @@ public class DatabaseSelectorController implements Initializable {
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * Funkcja do usuwania bazy danych z zapamiętanych po kliknięciu przycisku "REMOVE DATABASE"
+     */
     @FXML
-    private void onRemoveDatabaseClick(ActionEvent actionEvent) {
+    private void onRemoveDatabaseClick() {
         try {
+            // Usuwa bazę danych z pamiętanych w configu
             config.removeDatabase(
+                    // Sprawdza która z zapamiętanych baz jest zaznaczona
                     databaseTable.getSelectionModel().getSelectedItem()
             );
         } catch (Exception e) {
@@ -86,7 +115,12 @@ public class DatabaseSelectorController implements Initializable {
         update();
     }
 
+    /**
+     * Funkcja do otwierania bazy danych  po kliknięciu przycisku "OPEN DATABASE"
+     * @param actionEvent event wywołujący funkcję (kliknięcie OPEN DATABASE) [ActionEvent]
+     */
     public void onOpenDatabaseClick(ActionEvent actionEvent) {
+        // Sprawdza która z zapamiętanych baz jest zaznaczona
         DatabaseRecord databaseRecord = databaseTable.getSelectionModel().getSelectedItem();
         try {
             openLocalDatabase(databaseRecord, actionEvent);
@@ -96,7 +130,11 @@ public class DatabaseSelectorController implements Initializable {
     }
 
     private SimpleStringProperty unlockPassword = new SimpleStringProperty();
-    private void showPasswordDialog(ActionEvent actionEvent) throws IOException {
+
+    /**
+     * Funkcja do wyświetlania okna podania hasła do bazy danych
+     */
+    private void showPasswordDialog() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(SceneController.class.getResource("unlock-database-dialog.fxml"));
         Parent parent = fxmlLoader.load();
         UnlockDatabaseController unlockDatabaseController = fxmlLoader.<UnlockDatabaseController>getController();
@@ -108,14 +146,21 @@ public class DatabaseSelectorController implements Initializable {
         stage.showAndWait();
     }
 
+    /**
+     * Funkcja otwierająca bazę danych po kliknięciu "OPEN DATABASE"
+     * @param databaseRecord baza danych do otworzenia [DatabaseRecord]
+     * @param actionEvent event wywołujący funkcję (kliknięcie OPEN DATABASE) [ActionEvent]
+     */
     private void openLocalDatabase(DatabaseRecord databaseRecord, ActionEvent actionEvent) {
         try {
-            showPasswordDialog(actionEvent);
+            // wyświetla okno podania hasła do bazy danych
+            showPasswordDialog();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         SqliteDataSourceDAOFactory sqliteDataSourceDAOFactory = SqliteDataSourceDAOFactory.getInstance();
         try {
+            // tworzy połączenie pomiędzy kontraktem i bazą danych
             sqliteDataSourceDAOFactory.establishConnection(databaseRecord.path());
         } catch (Exception exception) {
             AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.ERROR);
@@ -128,6 +173,7 @@ public class DatabaseSelectorController implements Initializable {
         }
         Info info;
         try {
+            // pobiera informacje z kontraktu o bazie danych
             info = sqliteDataSourceDAOFactory.getInfoDao().getInfo();
             System.out.println(Arrays.toString(info.getChallenge()));
 
@@ -144,8 +190,10 @@ public class DatabaseSelectorController implements Initializable {
         cryptoController.setDatabaseName(databaseRecord.name());
         boolean isValidPassword;
         try {
+            // ustawia zmienne potrzebne do odkodowania bazy danych
             cryptoController.setSalt(info.getSalt());
             cryptoController.initializeKey(unlockPassword.get());
+            // sprawdza czy podano dobre hasło do bazy danych
             isValidPassword = cryptoController.verify(info.getChallenge());
         } catch (Exception exception) {
             AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.ERROR);
@@ -156,6 +204,7 @@ public class DatabaseSelectorController implements Initializable {
             alertBuilder.getAlert().showAndWait();
             return;
         }
+        // jeśli hasło jest niepoprawne
         if(!isValidPassword) {
             AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.ERROR);
             alertBuilder
@@ -165,6 +214,7 @@ public class DatabaseSelectorController implements Initializable {
             return;
         }
         try {
+            // jeśli hasło jest poprawne wyświetla bazę danych
             SceneController.setScene(actionEvent, "passwords-view.fxml");
         } catch (Exception exception) {
             AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.ERROR);

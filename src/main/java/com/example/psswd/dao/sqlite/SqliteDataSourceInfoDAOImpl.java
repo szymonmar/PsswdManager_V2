@@ -9,6 +9,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+/**
+ * Klasa implementująca InfoDao, obsługująca dostęp do bazy danych (do tabeli zawierającej informacje o bazie danych potrzebne do odszyfrowania)
+ */
 public class SqliteDataSourceInfoDAOImpl implements InfoDao {
 
     public void insertInfo(Info info) {

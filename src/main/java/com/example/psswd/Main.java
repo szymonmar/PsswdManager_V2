@@ -12,8 +12,12 @@ import java.io.IOException;
 import java.util.List;
 
 public class Main extends Application {
-    private static Stage primaryStage;
 
+    /**
+     * Funkcja wykonująca start programu
+     * @param stage
+     * @throws IOException jeśli wystąpi błąd strumienia wejścia / wyjścia
+     */
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("database-selector-view.fxml"));

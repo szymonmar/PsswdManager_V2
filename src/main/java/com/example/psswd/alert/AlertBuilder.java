@@ -8,9 +8,21 @@ import javafx.scene.layout.Priority;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+/**
+ * Klasa reprezentująca alert wyświetlany w programie
+ */
 final public class AlertBuilder implements Alert {
+
+    /**
+     * Obiekt typu javafx.scene.control.Alert przechowujący dane alertu do wyświetlenia
+     * Potrzebny do javafx-controls
+     */
     private final javafx.scene.control.Alert alert;
 
+    /**
+     * Konstruktor AlertBuildera
+     * @param alertType Typ alertu do wyświetlenia [javafx.scene.control.Alert.AlertType]
+     */
     public AlertBuilder(javafx.scene.control.Alert.AlertType alertType) {
         alert = new javafx.scene.control.Alert(alertType);
     }
@@ -52,6 +64,11 @@ final public class AlertBuilder implements Alert {
         return this;
     }
 
+    /**
+     * Metoda wywoływana przez kontrolery GUI po to, aby wyświetlić błąd
+     * w oknie alertu
+     * @return Obiekt typu javafx.scene.control.Alert do wyświetlenia
+     */
     public javafx.scene.control.Alert getAlert() {
         return alert;
     }
