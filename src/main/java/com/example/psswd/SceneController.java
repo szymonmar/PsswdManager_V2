@@ -22,7 +22,7 @@ public class SceneController {
     /**
      * Ustawia określoną scenę w oknie, w którym wystąpił event
      * @param event akcja wykonana przez użytkownika [ActionEvent]
-     * @param resource
+     * @param resource nazwa pliku fxml do ustawienia jako scena [String]
      * @throws NullPointerException jeśli resource == null
      * @throws IOException jeśli wystąpił błąd w strumieniu wejścia / wyjścia (funkcja load())
      */
