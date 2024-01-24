@@ -1,0 +1,9 @@
+module:com.example.psswd
+com.example.psswd
+com.example.psswd.alert
+com.example.psswd.config
+com.example.psswd.crypto
+com.example.psswd.dao
+com.example.psswd.dao.sqlite
+com.example.psswd.model
+com.example.psswd.views
