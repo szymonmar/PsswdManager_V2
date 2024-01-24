@@ -206,14 +206,33 @@ public class PasswordsController implements Initializable {
             return;
         }
 
-        FXMLLoader fxmlLoader = new FXMLLoader(SceneController.class.getResource("edit-password-dialog.fxml"));
-        Parent parent = fxmlLoader.load();
-        Scene scene = new Scene(parent, 380, 300);
-        Stage stage = new Stage();
-        stage.initModality(Modality.APPLICATION_MODAL);
-        stage.setScene(scene);
-        stage.showAndWait();
-        update();
+        if(passwordsTable.getSelectionModel().isEmpty()) {
+            return;
+        }
+
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(SceneController.class.getResource("edit-password-dialog.fxml"));
+            EditPasswordController controller = new EditPasswordController(
+                    passwordsTable.getSelectionModel().getSelectedItem().getId(),
+                    passwordsTable.getSelectionModel().getSelectedItem()
+            );
+            fxmlLoader.setController(controller);
+            Parent parent = fxmlLoader.load();
+            Scene scene = new Scene(parent, 380, 300);
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setScene(scene);
+            stage.showAndWait();
+        } catch (Exception exception) {
+        AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.ERROR);
+        alertBuilder
+                .setTitle("Error")
+                .setHeaderText("Failed to edit password.")
+                .setException(exception);
+        alertBuilder.getAlert().showAndWait();
+        } finally {
+            update();
+        }
     }
 
     /**

@@ -65,7 +65,24 @@ public class SqliteDataSourcePasswordsDAOImpl implements PasswordsDao {
 
     @Override
     public void updatePassword(int id, Password password) {
-
+        String query = """
+                UPDATE passwords
+                SET "name" = ?,
+                    "url" = ?,
+                    "password" = ?
+                WHERE id = ?;
+                """;
+        try(Connection conn = daoFactory.getConnection();
+            PreparedStatement ps = conn.prepareStatement(query)
+        ) {
+            ps.setString(1, password.getName());
+            ps.setString(2, password.getUrl());
+            ps.setBytes(3, password.getPassword());
+            ps.setInt(4, id);
+            ps.executeUpdate();
+        } catch (Exception exception) {
+            throw new RuntimeException(exception);
+        }
     }
 
     @Override
