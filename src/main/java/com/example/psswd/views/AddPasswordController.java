@@ -76,7 +76,6 @@ public class AddPasswordController {
             alertBuilder.getAlert().showAndWait();
             return;
         }
-        System.out.println(Arrays.toString(password.getPassword()));
         try {
             // Próba stworzenia DAO w celu dodania wpisu do bazy danych
             sqliteDataSourceDAOFactory.getPasswordsDao().insertPassword(password);

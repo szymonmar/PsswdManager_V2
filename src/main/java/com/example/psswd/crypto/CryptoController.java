@@ -58,6 +58,10 @@ public class CryptoController {
         return cryptoControllerInstance;
     }
 
+    public static void deleteInstance() {
+        cryptoControllerInstance = null;
+    }
+
     /**
      * Służy do ustawienia nazwy bazy danych (nazwy użytkownika)
      * @param databaseName Nowa nazwa [String]

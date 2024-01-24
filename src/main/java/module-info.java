@@ -13,6 +13,7 @@ module com.example.psswd {
 
     opens com.example.psswd to javafx.fxml;
     exports com.example.psswd;
+    exports com.example.psswd.model;
     exports com.example.psswd.views;
     opens com.example.psswd.views to javafx.fxml;
     exports com.example.psswd.crypto;
