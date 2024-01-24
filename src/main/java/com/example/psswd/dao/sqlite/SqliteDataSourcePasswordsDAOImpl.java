@@ -10,7 +10,14 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Klasa implementująca PasswordsDao, obsługująca dostęp do bazy danych (do tabeli z hasłami)
+ */
 public class SqliteDataSourcePasswordsDAOImpl implements PasswordsDao {
+
+    /**
+     * instancja SqliteDataSourceDAOFactory
+     */
     private static final SqliteDataSourceDAOFactory daoFactory = SqliteDataSourceDAOFactory.getInstance();
     @Override
     public List<Password> getPasswords() {

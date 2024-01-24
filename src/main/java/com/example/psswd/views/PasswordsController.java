@@ -27,30 +27,67 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+/**
+ * Klasa obsługująca wyświetlanie bazy danych z hasłami w GUI
+ * Ekran główny użytkownika
+ */
 public class PasswordsController implements Initializable {
+
+    /**
+     * Pole tekstowe wyszukiwania
+     */
     @FXML
     private TextField searchField;
+
+    /**
+     * Górny toolbar
+     */
     @FXML
     private HBox hboxSearchToolbar;
     @FXML
     private HBox hboxToolbar;
+
+    /**
+     * Kolumna tabeli z nazwami serwisów we wpisach
+     */
     @FXML
     private TableColumn<Password, String> nameCol;
+
+    /**
+     * Kolumna tabeli z url do serwisu we wpisach
+     */
     @FXML
     private TableColumn<Password, String> urlCol;
+
+    /**
+     * Kolumna tabeli z hasłami
+     */
     @FXML
     private TableColumn<Password, String> passwordCol;
+
+    /**
+     * Tabela z wpisami
+     */
     @FXML
     private TableView<Password> passwordsTable;
     private ObservableList<Password> passwords = FXCollections.observableArrayList();
 
+    /**
+     * instancja SqliteDataSourceDAOFactory
+     */
     private static final SqliteDataSourceDAOFactory sqliteDataSourceDAOFactory =
             SqliteDataSourceDAOFactory.getInstance();
 
+    /**
+     * Funkcja wyświetlająca GUI i zawartość bazy danych w tabeli
+     * @param url parametry użyte aby implementacja interfejsu działała
+     * @param rb parametry użyte aby implementacja interfejsu działała
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         HBox.setHgrow(hboxSearchToolbar, Priority.ALWAYS);
 
+        // ustawianie nagłówków dla kolumn
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         urlCol.setCellValueFactory(new PropertyValueFactory<>("url"));
 
@@ -59,13 +96,25 @@ public class PasswordsController implements Initializable {
                 new Callback<TableColumn<Password, String>, TableCell<Password, String>>() {
                     @Override
                     public TableCell<Password,String> call(final TableColumn<Password, String> param) {
+
+                        // obsługa funkcji pokaż / ukryj hasło
                         final TableCell<Password, String> cell = new TableCell<Password, String>() {
                             final Button btn = new Button("Show");
                             final TextField passwordField = new TextField();
                             final HBox hbox = new HBox(2);
+
+                            /**
+                             * Funkcja odświeżająca pole hasła w zależności od wybranego trybu (SHOW / HIDE)
+                             * @param item wartość, którą będziemy zastępować dany element (hasło lub ciąg kropek) [String]
+                             * @param empty czy pole hasło jest puste [Boolean]
+                             */
                             @Override
                             public void updateItem(String item, boolean empty) {
                                 super.updateItem(item, empty);
+
+                                /**
+                                 * ciąg znaków zastępujący hasło, aby je zamaskować
+                                 */
                                 String maskedPassword = "•".repeat(8);
                                 if (empty) {
                                     setGraphic(null);
@@ -111,6 +160,7 @@ public class PasswordsController implements Initializable {
         passwordCol.setCellFactory(cellFactory);
         passwords = FXCollections.observableArrayList(sqliteDataSourceDAOFactory.getPasswordsDao().getPasswords());
 
+        // obsługa wyszukiwania
         FilteredList<Password> filteredPasswords = new FilteredList<>(passwords, p -> true);
 
         searchField.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -130,6 +180,8 @@ public class PasswordsController implements Initializable {
                 return false;
             });
         });
+
+        // obsługa sortowania
         SortedList<Password> sortedPasswords = new SortedList<>(filteredPasswords);
         sortedPasswords.comparatorProperty().bind(passwordsTable.comparatorProperty());
 
@@ -137,10 +189,18 @@ public class PasswordsController implements Initializable {
 
     }
 
+    /**
+     * Funkcja odświeżająca dane pobrane z bazy danych haseł
+     */
     private void update() {
         passwords.setAll(sqliteDataSourceDAOFactory.getPasswordsDao().getPasswords());
     }
 
+    /**
+     * Funkcja do edytowania pojedynczego wpisu bazy danych po kliknięciu "EDIT"
+     * @param actionEvent event wywołujący funkcję (kliknięcie EDIT) [ActionEvent]
+     * @throws IOException jeśli wystąpi błąd strumienia wejścia / wyjścia
+     */
     public void onEditClick(ActionEvent actionEvent) throws IOException {
         if(passwordsTable.getSelectionModel().isEmpty()) {
             return;
@@ -156,6 +216,10 @@ public class PasswordsController implements Initializable {
         update();
     }
 
+    /**
+     * Funkcja do usuwania wpisu z bazy danych po kliknięciu przycisku "DELETE"
+     * @param actionEvent event wywołujący funkcję (kliknięcie DELETE) [ActionEvent]
+     */
     public void onDeleteClick(ActionEvent actionEvent) {
         if(passwordsTable.getSelectionModel().isEmpty()) {
             return;
@@ -177,6 +241,11 @@ public class PasswordsController implements Initializable {
         }
     }
 
+    /**
+     * Funkcja do otwierania okna tworzenia dodawania wpisu do bazy danych po kliknięciu przycisku "ADD"
+     * @param actionEvent event wywołujący funkcję (kliknięcie ADD) [ActionEvent]
+     * @throws IOException jeśli wystąpi błąd strumienia wejścia / wyjścia
+     */
     public void onAddClick(ActionEvent actionEvent) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(SceneController.class.getResource("add-password-dialog.fxml"));
         Parent parent = fxmlLoader.load();
