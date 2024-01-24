@@ -22,7 +22,6 @@
          </Label>
          <HBox alignment="TOP_CENTER" prefHeight="0.0" prefWidth="560.0" style="-fx-spacing: 20;">
             <children>
-               <Button alignment="CENTER" mnemonicParsing="false" text="Open existing database" textAlignment="CENTER" />
                 <Button onAction="#onCreateDatabaseClick" prefHeight="25.0" prefWidth="147.0" text="Create database" />
             </children>
          </HBox>
