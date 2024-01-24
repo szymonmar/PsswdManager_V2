@@ -257,4 +257,17 @@ public class PasswordsController implements Initializable {
         update();
     }
 
+    public void onBackClick(ActionEvent actionEvent) {
+        CryptoController.deleteInstance();
+        try {
+            SceneController.setScene(actionEvent, "database-selector-view.fxml");
+        } catch (Exception exception) {
+            AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.ERROR);
+            alertBuilder
+                    .setTitle("Error")
+                    .setHeaderText("Fatal error.")
+                    .setException(exception);
+            alertBuilder.getAlert().showAndWait();
+        }
+    }
 }
