@@ -28,6 +28,10 @@ public class Main extends Application {
         stage.show();
     }
 
+    /**
+    * Główna funkcja programu
+    * Wywołuje metodę launch(), która rozpoczyna cykl życia aplikacji JavaFX
+    */
     public static void main(String[] args) {
         launch();
     }
