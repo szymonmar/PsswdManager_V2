@@ -30,10 +30,34 @@ import java.util.function.IntPredicate;
  * Klasa obsługująca edycję wpisu w bazie danych z GUI
  */
 public class EditPasswordController implements Initializable {
+    /**
+     * parametr z nazwą hasła
+     */
     private StringProperty passwordName = new SimpleStringProperty();
+    /**
+     * parametr z url hasła
+     */
     private StringProperty passwordUrl = new SimpleStringProperty();
+    /**
+     * parametr z hasłem
+     */
     private StringProperty passwordText = new SimpleStringProperty();
+    /**
+     * parametr z id hasła
+     */
     private IntegerProperty passwordId = new SimpleIntegerProperty();
+
+    /**
+     * Konstruktor kontrolera widoku edycji hasła
+     * @param passwordId id hasła które będzie edytowane
+     * @param password obiekt typu Password który będzie edytowany
+     * @throws InvalidAlgorithmParameterException
+     * @throws NoSuchPaddingException
+     * @throws IllegalBlockSizeException
+     * @throws NoSuchAlgorithmException
+     * @throws BadPaddingException
+     * @throws InvalidKeyException
+     */
     public EditPasswordController(int passwordId, Password password) throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         this.passwordId.set(passwordId);
         this.passwordName.set(password.getName());

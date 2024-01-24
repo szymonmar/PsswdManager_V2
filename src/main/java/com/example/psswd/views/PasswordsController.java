@@ -276,6 +276,10 @@ public class PasswordsController implements Initializable {
         update();
     }
 
+    /**
+     * Funkcja do zamknięcia bazy, wywołująca powrót do menu wyboru baz "BACK"
+     * @param actionEvent event wywołujący funkcję (kliknięcie BACK) [ActionEvent]
+     */
     public void onBackClick(ActionEvent actionEvent) {
         CryptoController.deleteInstance();
         try {
