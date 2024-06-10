@@ -1,1 +1,1 @@
-moduleSearchIndex = [{"l":"com.example.psswd"}];updateSearchResults();
+moduleSearchIndex = [{"l":"com.example.psswd.Server"}];updateSearchResults();
