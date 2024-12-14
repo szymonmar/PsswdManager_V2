@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<?import javafx.scene.control.CheckBox?>
+<Pane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <HBox>
+            <VBox layoutY="3.0" prefHeight="350.0" prefWidth="380.0" style="-fx-spacing: 15; -fx-padding: 25;">
+                <VBox layoutY="3.0" prefHeight="150.0" prefWidth="380.0" style="-fx-spacing: 15;">
+                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Change password">
+                        <font>
+                            <Font name="System Bold" size="18.0" />
+                        </font>
+                    </Text>
+                    <VBox prefHeight="50.0" prefWidth="100.0" style="-fx-spacing: 5;">
+                        <children>
+                            <Label text="Old Password" />
+                            <PasswordField fx:id="oldPasswordField"/>
+                        </children>
+                    </VBox>
+                    <VBox prefHeight="50.0" prefWidth="100.0" style="-fx-spacing: 5;">
+                        <children>
+                            <Label text="New Password" />
+                            <PasswordField fx:id="newPasswordField" />
+                        </children>
+                    </VBox>
+                    <VBox prefHeight="50.0" prefWidth="100.0" style="-fx-spacing: 5;">
+                        <children>
+                            <Label text="Repeat New Password" />
+                            <PasswordField fx:id="repNewPasswordField" />
+                        </children>
+                    </VBox>
+                </VBox>
+                <HBox alignment="BOTTOM_RIGHT" prefHeight="24.0" prefWidth="380.0" style="-fx-spacing: 20;">
+                    <Button cancelButton="true" contentDisplay="CENTER" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#onCancelClick" prefHeight="25.0" prefWidth="60.0" text="Cancel" textAlignment="CENTER" />
+                    <Button contentDisplay="CENTER" defaultButton="true" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#onSaveClick" prefHeight="25.0" prefWidth="120.0" text="Change Password" textAlignment="CENTER" />
+                </HBox>
+            </VBox>
+            <VBox layoutY="3.0" prefHeight="350.0" prefWidth="380.0" style="-fx-spacing: 35; -fx-padding: 25;">
+                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Delete account">
+                    <font>
+                        <Font name="System Bold" size="18.0" />
+                    </font>
+                </Text>
+                <HBox prefHeight="132.0" prefWidth="380.0" style="-fx-spacing: 15;">
+                    <CheckBox fx:id="understandCheckBox"/>
+                    <Label text="I understand that deleting the account will result in the irreversible loss of all saved passwords."
+                           wrapText="true" prefWidth="300.0" />
+                </HBox>
+                <HBox alignment="BOTTOM_RIGHT" prefHeight="24.0" prefWidth="380.0" style="-fx-spacing: 20;">
+                    <Button contentDisplay="CENTER" defaultButton="true" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#onDeleteClick" prefHeight="25.0" prefWidth="120.0" text="Delete Account" textAlignment="CENTER" />
+                </HBox>
+            </VBox>
+        </HBox>
+    </children>
+</Pane>

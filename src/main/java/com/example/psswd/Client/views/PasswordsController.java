@@ -304,4 +304,27 @@ public class PasswordsController implements Initializable {
             alertBuilder.getAlert().showAndWait();
         }
     }
+
+    public void onAccountClick(ActionEvent actionEvent) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(SceneController.class.getResource("edit-account-dialog.fxml"));
+            EditAccountController controller = new EditAccountController();
+            fxmlLoader.setController(controller);
+            Parent parent = fxmlLoader.load();
+            Scene scene = new Scene(parent, 760, 350);
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setScene(scene);
+            stage.showAndWait();
+        } catch (Exception exception) {
+            AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.ERROR);
+            alertBuilder
+                    .setTitle("Error")
+                    .setHeaderText("Failed to edit account.")
+                    .setException(exception);
+            alertBuilder.getAlert().showAndWait();
+        } finally {
+            update();
+        }
+    }
 }
