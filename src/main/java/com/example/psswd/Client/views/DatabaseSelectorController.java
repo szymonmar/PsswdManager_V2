@@ -115,8 +115,7 @@ public class DatabaseSelectorController implements Initializable {
             AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.ERROR);
             alertBuilder
                     .setTitle("Error")
-                    .setHeaderText(reply.getRequest())
-                    .setException(null);
+                    .setHeaderText(reply.getRequest());
             alertBuilder.getAlert().showAndWait();
             return;
         }

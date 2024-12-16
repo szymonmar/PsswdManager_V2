@@ -147,7 +147,7 @@ public class ServerThread extends Thread {
         try {
             // pobiera informacje z kontraktu o bazie danych
             info = sqliteDataSourceDAOFactory.getInfoDao().getInfo();
-            System.out.println(Arrays.toString(info.getChallenge()));
+            //System.out.println(Arrays.toString(info.getChallenge()));
 
         } catch (Exception exception) {
             exception.printStackTrace();

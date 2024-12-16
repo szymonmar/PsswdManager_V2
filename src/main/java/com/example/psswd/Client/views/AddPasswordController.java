@@ -63,20 +63,27 @@ public class AddPasswordController {
         Request reply = (Request) connectionHandlerInstance.readObjectFromServer();
 
         if(reply.getRequest().equals("success")) {
+            AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.INFORMATION);
+            alertBuilder
+                    .setTitle("Information")
+                    .setHeaderText("Your password has been added successfully");
+            alertBuilder.getAlert().showAndWait();
             SceneController.destroyStage(actionEvent);
             return;
         } else {
             AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.ERROR);
             alertBuilder
-                    .setTitle("Error from server")
-                    .setHeaderText(reply.getRequest())
-                    .setException(null);
+                    .setTitle("Error")
+                    .setHeaderText(reply.getRequest());
             alertBuilder.getAlert().showAndWait();
         }
 
         SceneController.destroyStage(actionEvent);
     }
 
+    // todo
+    public void onGenerateClick(ActionEvent actionEvent) {
 
+    }
 
 }

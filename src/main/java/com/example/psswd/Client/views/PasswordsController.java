@@ -216,7 +216,7 @@ public class PasswordsController implements Initializable {
             );
             fxmlLoader.setController(controller);
             Parent parent = fxmlLoader.load();
-            Scene scene = new Scene(parent, 380, 300);
+            Scene scene = new Scene(parent, 760, 300);
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setScene(scene);
@@ -233,6 +233,7 @@ public class PasswordsController implements Initializable {
         }
     }
 
+    // todo add confirmation before deleting
     /**
      * Funkcja do usuwania wpisu z bazy danych po kliknięciu przycisku "DELETE"
      * @param actionEvent event wywołujący funkcję (kliknięcie DELETE) [ActionEvent]
@@ -252,9 +253,8 @@ public class PasswordsController implements Initializable {
         } else {
             AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.ERROR);
             alertBuilder
-                    .setTitle("Error from server")
-                    .setHeaderText(reply.getRequest())
-                    .setException(null);
+                    .setTitle("Error")
+                    .setHeaderText(reply.getRequest());
             alertBuilder.getAlert().showAndWait();
         }
         update();
@@ -268,7 +268,7 @@ public class PasswordsController implements Initializable {
     public void onAddClick(ActionEvent actionEvent) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(SceneController.class.getResource("add-password-dialog.fxml"));
         Parent parent = fxmlLoader.load();
-        Scene scene = new Scene(parent, 380, 300);
+        Scene scene = new Scene(parent, 760, 300);
         Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setScene(scene);
@@ -299,8 +299,7 @@ public class PasswordsController implements Initializable {
             AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.ERROR);
             alertBuilder
                     .setTitle("Error")
-                    .setHeaderText(reply.getRequest())
-                    .setException(null);
+                    .setHeaderText(reply.getRequest());
             alertBuilder.getAlert().showAndWait();
         }
     }

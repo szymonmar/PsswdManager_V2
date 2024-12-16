@@ -5,6 +5,7 @@ import com.example.psswd.Client.SceneController;
 import com.example.psswd.Client.alert.AlertBuilder;
 import com.example.psswd.Client.model.Password;
 import com.example.psswd.CommPsswd;
+import com.example.psswd.LoginCredentials;
 import com.example.psswd.Request;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -30,26 +31,8 @@ import java.util.ResourceBundle;
 /**
  * Klasa obsługująca edycję konta użytkownika z GUI
  */
-public class EditAccountController implements Initializable {
+public class EditAccountController {
 
-    /**
-     * Konstruktor kontrolera widoku edycji konta użytkownika
-     * @throws InvalidAlgorithmParameterException
-     * @throws NoSuchPaddingException
-     * @throws IllegalBlockSizeException
-     * @throws NoSuchAlgorithmException
-     * @throws BadPaddingException
-     * @throws InvalidKeyException
-     */
-    public EditAccountController() throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
-
-    }
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {            //todo
-//        urlField.setText(passwordUrl.get());
-//        nameField.setText(passwordName.get());
-//        passwordField.setText(passwordText.get());
-    }
 
     /**
      * Pole tekstowe do wpisania starego hasła do konta
@@ -82,32 +65,39 @@ public class EditAccountController implements Initializable {
      * @param actionEvent event wywołujący funkcję (kliknięcie SAVE) [ActionEvent]
      */
     public void onSaveClick(ActionEvent actionEvent) {
-        // todo zmiana hasła
+        if(this.newPasswordField.getText().equals(this.repNewPasswordField.getText())) {
+            // pobranie danych z frontendu
+            LoginCredentials loginCredentials = new LoginCredentials(this.oldPasswordField.getText());
+            loginCredentials.setNoweHaslo(this.newPasswordField.getText());
+
+            // pobranie instancji połączenia, wysłanie request i nowego hasła do sprawdzenia przez serwer
+            ConnectionHandler connectionHandlerInstance = ConnectionHandler.getInstance();
+            connectionHandlerInstance.sendObjectToServer(new Request("editAcc"));
+            connectionHandlerInstance.sendObjectToServer(loginCredentials);
+            Request reply = (Request) connectionHandlerInstance.readObjectFromServer();
+            if(reply.getRequest().equals("success")) {
+                AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.INFORMATION);
+                alertBuilder
+                        .setTitle("Information")
+                        .setHeaderText("Your password has been changed");
+                alertBuilder.getAlert().showAndWait();
+                SceneController.destroyStage(actionEvent);
+            } else {
+                AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.ERROR);
+                alertBuilder
+                        .setTitle("Error")
+                        .setHeaderText(reply.getRequest());
+                alertBuilder.getAlert().showAndWait();
+            }
+        } else {
+            AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.ERROR);
+            alertBuilder
+                    .setTitle("Error")
+                    .setHeaderText("Passwords are not identical!");
+            alertBuilder.getAlert().showAndWait();
+        }
 
 
-//        // pobranie danych z frontendu
-//        CommPsswd commPsswd = new CommPsswd();
-//        commPsswd.setId(this.passwordId.get());
-//        commPsswd.setName(nameField.getText());
-//        commPsswd.setUrl(urlField.getText());
-//        commPsswd.setPassword(passwordField.getText());
-//
-//        // pobranie instancji połączenia, wysłanie request i danych hasła
-//        ConnectionHandler connectionHandlerInstance = ConnectionHandler.getInstance();
-//        connectionHandlerInstance.sendObjectToServer(new Request("edit"));
-//        connectionHandlerInstance.sendObjectToServer(commPsswd);
-//        Request reply = (Request) connectionHandlerInstance.readObjectFromServer();
-//        if(reply.getRequest().equals("success")) {
-//            SceneController.destroyStage(actionEvent);
-//            return;
-//        } else {
-//            AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.ERROR);
-//            alertBuilder
-//                    .setTitle("Error from server")
-//                    .setHeaderText(reply.getRequest())
-//                    .setException(null);
-//            alertBuilder.getAlert().showAndWait();
-//        }
     }
 
     /**
@@ -121,6 +111,11 @@ public class EditAccountController implements Initializable {
             connectionHandlerInstance.sendObjectToServer(new Request("deleteaccount"));         // todo po stronie serwera
             Request reply = (Request) connectionHandlerInstance.readObjectFromServer();
             if(reply.getRequest().equals("success")) {
+                AlertBuilder infobox = new AlertBuilder(Alert.AlertType.INFORMATION);
+                infobox
+                        .setTitle("Information")
+                        .setHeaderText("Your account has been removed.");
+                infobox.getAlert().showAndWait();
                 try {
                     SceneController.setScene(actionEvent, "database-selector-view.fxml");
                 } catch (Exception exception) {
@@ -142,7 +137,8 @@ public class EditAccountController implements Initializable {
             AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.ERROR);
             alertBuilder
                     .setTitle("Error")
-                    .setHeaderText("You need to confirm that You understand conseuences of this action before proceeding");
+                    .setHeaderText("You need to confirm that You understand further consequences of this " +
+                            "action before proceeding");
             alertBuilder.getAlert().showAndWait();
         }
 
