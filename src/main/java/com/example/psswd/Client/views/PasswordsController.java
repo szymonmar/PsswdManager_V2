@@ -216,7 +216,7 @@ public class PasswordsController implements Initializable {
             );
             fxmlLoader.setController(controller);
             Parent parent = fxmlLoader.load();
-            Scene scene = new Scene(parent, 760, 300);
+            Scene scene = new Scene(parent, 760, 360);
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setScene(scene);
