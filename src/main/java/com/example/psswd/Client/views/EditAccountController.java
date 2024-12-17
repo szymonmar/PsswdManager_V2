@@ -145,6 +145,10 @@ public class EditAccountController {
 
     }
 
+    public void onGenerateClick(ActionEvent actionEvent) {
+
+    }
+
     /**
      * Funkcja do zamykania okna dodawania hasła po kliknięciu przycisku "CANCEL"
      * @param actionEvent event wywołujący funkcję (kliknięcie CANCEL) [ActionEvent]

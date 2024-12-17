@@ -268,7 +268,7 @@ public class PasswordsController implements Initializable {
     public void onAddClick(ActionEvent actionEvent) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(SceneController.class.getResource("add-password-dialog.fxml"));
         Parent parent = fxmlLoader.load();
-        Scene scene = new Scene(parent, 760, 300);
+        Scene scene = new Scene(parent, 760, 360);
         Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setScene(scene);
@@ -310,7 +310,7 @@ public class PasswordsController implements Initializable {
             EditAccountController controller = new EditAccountController();
             fxmlLoader.setController(controller);
             Parent parent = fxmlLoader.load();
-            Scene scene = new Scene(parent, 760, 350);
+            Scene scene = new Scene(parent, 760, 530);
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setScene(scene);
