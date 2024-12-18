@@ -70,6 +70,7 @@ public class DatabaseSelectorController implements Initializable {
         unlockDatabaseController.setUnlockPassword(unlockPassword, unlockLogin);
         Scene scene = new Scene(parent, 380, 210);
         Stage stage = new Stage();
+        stage.setTitle("Log in");
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setScene(scene);
         stage.showAndWait();

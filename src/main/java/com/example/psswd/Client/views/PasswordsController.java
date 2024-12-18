@@ -218,6 +218,7 @@ public class PasswordsController implements Initializable {
             Parent parent = fxmlLoader.load();
             Scene scene = new Scene(parent, 760, 360);
             Stage stage = new Stage();
+            stage.setTitle("Edit password");
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setScene(scene);
             stage.showAndWait();
@@ -270,6 +271,7 @@ public class PasswordsController implements Initializable {
         Parent parent = fxmlLoader.load();
         Scene scene = new Scene(parent, 760, 360);
         Stage stage = new Stage();
+        stage.setTitle("Add password");
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setScene(scene);
         stage.showAndWait();
@@ -312,6 +314,7 @@ public class PasswordsController implements Initializable {
             Parent parent = fxmlLoader.load();
             Scene scene = new Scene(parent, 770, 530);
             Stage stage = new Stage();
+            stage.setTitle("Account settings");
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setScene(scene);
             stage.showAndWait();
