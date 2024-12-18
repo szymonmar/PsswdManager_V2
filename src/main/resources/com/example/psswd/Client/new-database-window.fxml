@@ -9,30 +9,94 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<Pane prefHeight="400" prefWidth="600" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.psswd.Client.views.NewDatabaseController">
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Slider?>
+<Pane prefHeight="400" prefWidth="800" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.psswd.Client.views.NewDatabaseController">
    <children>
-      <VBox layoutX="97.0" layoutY="106.0" prefHeight="189.0" prefWidth="407.0" style="-fx-spacing: 15;">
-         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Create new user">
-            <font>
-               <Font name="System Bold" size="24.0" />
-            </font>
-         </Text>
-         <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
-            <Text nodeOrientation="LEFT_TO_RIGHT" strokeType="OUTSIDE" strokeWidth="0.0" text="Username:" wrappingWidth="120" />
-            <TextField fx:id="dbNameField" prefHeight="25.0" prefWidth="299.0" />
-         </HBox>
-         <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
-            <Text nodeOrientation="LEFT_TO_RIGHT" strokeType="OUTSIDE" strokeWidth="0.0" text="Password:" wrappingWidth="120" />
-            <PasswordField fx:id="passwordField" prefHeight="25.0" prefWidth="298.0" />
-         </HBox>
-         <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
-            <Text nodeOrientation="LEFT_TO_RIGHT" strokeType="OUTSIDE" strokeWidth="0.0" text="Repeat password:" wrappingWidth="120" />
-            <PasswordField fx:id="passwordRepeatField" prefHeight="25.0" prefWidth="305.0" />
-         </HBox>
-         <HBox alignment="BOTTOM_RIGHT" prefHeight="150.0" prefWidth="429.0" style="-fx-spacing: 20;">
-            <Button contentDisplay="CENTER" defaultButton="true" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#onCreateClick" text="Create" textAlignment="CENTER" />
-            <Button cancelButton="true" contentDisplay="CENTER" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#onCancelClick" text="Cancel" textAlignment="CENTER" />
-         </HBox>
-      </VBox>
+<!--      <VBox layoutX="97.0" layoutY="106.0" prefHeight="189.0" prefWidth="407.0" style="-fx-spacing: 15;">-->
+<!--         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Create new user">-->
+<!--            <font>-->
+<!--               <Font name="System Bold" size="24.0" />-->
+<!--            </font>-->
+<!--         </Text>-->
+<!--         <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">-->
+<!--            <Text nodeOrientation="LEFT_TO_RIGHT" strokeType="OUTSIDE" strokeWidth="0.0" text="Username:" wrappingWidth="120" />-->
+<!--            <TextField fx:id="dbNameField" prefHeight="25.0" prefWidth="299.0" />-->
+<!--         </HBox>-->
+<!--         <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">-->
+<!--            <Text nodeOrientation="LEFT_TO_RIGHT" strokeType="OUTSIDE" strokeWidth="0.0" text="Password:" wrappingWidth="120" />-->
+<!--            <PasswordField fx:id="passwordField" prefHeight="25.0" prefWidth="298.0" />-->
+<!--         </HBox>-->
+<!--         <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">-->
+<!--            <Text nodeOrientation="LEFT_TO_RIGHT" strokeType="OUTSIDE" strokeWidth="0.0" text="Repeat password:" wrappingWidth="120" />-->
+<!--            <PasswordField fx:id="passwordRepeatField" prefHeight="25.0" prefWidth="305.0" />-->
+<!--         </HBox>-->
+<!--         <HBox alignment="BOTTOM_RIGHT" prefHeight="150.0" prefWidth="429.0" style="-fx-spacing: 20;">-->
+<!--            <Button contentDisplay="CENTER" defaultButton="true" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#onCreateClick" text="Create" textAlignment="CENTER" />-->
+<!--            <Button cancelButton="true" contentDisplay="CENTER" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#onCancelClick" text="Cancel" textAlignment="CENTER" />-->
+<!--         </HBox>-->
+<!--      </VBox>-->
+      <HBox>
+         <VBox layoutY="3.0" prefWidth="400.0" style="-fx-spacing: 15; -fx-padding: 25;">
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Create account">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Text>
+            <VBox style="-fx-spacing: 5;">
+               <children>
+                  <Label text="Username" />
+                  <TextField fx:id="dbNameField"/>
+               </children>
+            </VBox>
+            <VBox style="-fx-spacing: 5;">
+               <children>
+                  <Label text="Password" />
+                  <PasswordField fx:id="passwordField" />
+               </children>
+            </VBox>
+            <VBox style="-fx-spacing: 5;">
+               <children>
+                  <Label text="Repeat Password" />
+                  <PasswordField fx:id="passwordRepeatField" />
+               </children>
+            </VBox>
+            <VBox style="-fx-spacing: 5;">
+               <children>
+                  <Label text="Password strength" />
+                  <ProgressBar fx:id="progressBar" prefWidth="380.0" prefHeight="10.0" progress="0.0" style="-fx-accent: #FF0000;" />
+               </children>
+            </VBox>
+            <HBox alignment="BOTTOM_RIGHT" prefHeight="24.0" prefWidth="407.0" style="-fx-spacing: 20;">
+               <Button contentDisplay="CENTER" defaultButton="true" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#onCreateClick" text="Create" textAlignment="CENTER" />
+               <Button cancelButton="true" contentDisplay="CENTER" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#onCancelClick" text="Cancel" textAlignment="CENTER" />
+            </HBox>
+         </VBox>
+         <VBox layoutY="3.0" prefHeight="170.0" prefWidth="400.0" style="-fx-spacing: 35; -fx-padding: 25;">
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Generate password" style="-fx-padding: 20;">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Text>
+            <VBox style="-fx-spacing: 15;">
+               <CheckBox fx:id="capitals" text="Capital letters" />
+               <CheckBox fx:id="numbers" text="Numbers" />
+               <CheckBox fx:id="symbols" text="Symbols" />
+               <VBox prefWidth="380.0" style="-fx-spacing: 5">
+                  <Label text="Number of characters" />
+                  <HBox alignment="CENTER" prefWidth="400.0" style="-fx-spacing: 15;">
+                     <Label fx:id="numOfCharacters" prefWidth="50.0" alignment="CENTER"  text="8" style="-fx-font-size: 14"/>
+                     <Slider fx:id="slider" prefWidth="350.0" min="8" max="30" snapToTicks="true" blockIncrement="1" majorTickUnit="1"
+                             minorTickCount="0" />
+                  </HBox>
+               </VBox>
+            </VBox>
+            <HBox alignment="BOTTOM_RIGHT" prefHeight="24.0" prefWidth="400.0" style="-fx-spacing: 50;">
+               <Button contentDisplay="CENTER" defaultButton="true" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#onGenerateClick" prefHeight="25.0" prefWidth="140.0" text="Generate password" textAlignment="CENTER" />
+            </HBox>
+         </VBox>
+      </HBox>
    </children>
 </Pane>

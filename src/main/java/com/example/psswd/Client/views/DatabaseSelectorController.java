@@ -50,7 +50,6 @@ public class DatabaseSelectorController implements Initializable {
      */
     public void onOpenDatabaseClick(ActionEvent actionEvent) {
         // Sprawdza która z zapamiętanych baz jest zaznaczona
-        //DatabaseRecord databaseRecord = databaseTable.getSelectionModel().getSelectedItem();
         try {
             openLocalDatabase(actionEvent);
         } catch (Exception e) {
