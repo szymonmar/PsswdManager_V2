@@ -189,4 +189,9 @@ public class NewDatabaseController {
     public void onGenerateClick(ActionEvent actionEvent) {
 
     }
+
+    // todo
+    public void onUseClick(ActionEvent actionEvent) {
+
+    }
 }

@@ -208,6 +208,11 @@ public class EditPasswordController implements Initializable {
 
     }
 
+    // todo
+    public void onUseClick(ActionEvent actionEvent) {
+
+    }
+
     /**
      * Funkcja do zamykania okna dodawania hasła po kliknięciu przycisku "CANCEL"
      * @param actionEvent event wywołujący funkcję (kliknięcie CANCEL) [ActionEvent]

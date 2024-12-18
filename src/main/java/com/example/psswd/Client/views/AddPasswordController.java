@@ -171,4 +171,9 @@ public class AddPasswordController {
 
     }
 
+    // todo
+    public void onUseClick(ActionEvent actionEvent) {
+
+    }
+
 }

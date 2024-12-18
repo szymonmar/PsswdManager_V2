@@ -16,8 +16,8 @@
 <?import javafx.scene.control.Separator?>
 <Pane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <VBox style="-fx-spacing: 10;">
-            <HBox>
+        <VBox style="-fx-spacing: 0;">
+            <HBox style="-fx-padding: 0">
                 <VBox layoutY="3.0" prefHeight="350.0" prefWidth="380.0" style="-fx-spacing: 15; -fx-padding: 25;">
                     <VBox layoutY="3.0" prefWidth="380.0" style="-fx-spacing: 15;">
                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Change password">
@@ -50,12 +50,12 @@
                             </children>
                         </VBox>
                     </VBox>
-                    <HBox alignment="BOTTOM_RIGHT" prefHeight="24.0" prefWidth="380.0" style="-fx-spacing: 20;">
+                    <HBox alignment="BOTTOM_RIGHT" prefHeight="27.0" prefWidth="380.0" style="-fx-spacing: 20;">
                         <Button cancelButton="true" contentDisplay="CENTER" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#onCancelClick" prefHeight="25.0" prefWidth="60.0" text="Cancel" textAlignment="CENTER" />
                         <Button contentDisplay="CENTER" defaultButton="true" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#onSaveClick" prefHeight="25.0" prefWidth="120.0" text="Change Password" textAlignment="CENTER" />
                     </HBox>
                 </VBox>
-                <Separator prefWidth="1.0" />
+                <Separator prefHeight="380.0" orientation="VERTICAL" />
                 <VBox layoutY="3.0" prefHeight="350.0" prefWidth="380.0" style="-fx-spacing: 35; -fx-padding: 25;">
                     <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Generate password" style="-fx-padding: 20;">
                         <font>
@@ -75,8 +75,15 @@
                                         minorTickCount="0" />
                             </HBox>
                         </VBox>
+                        <HBox alignment="CENTER_LEFT" style="-fx-spacing: 10;">
+                            <children>
+                                <Label text="Generated password:" />
+                                <TextField fx:id="generatedPassword" prefWidth="205.0" editable="false"/>
+                            </children>
+                        </HBox>
                     </VBox>
-                    <HBox alignment="BOTTOM_RIGHT" prefHeight="24.0" prefWidth="380.0" style="-fx-spacing: 50;">
+                    <HBox alignment="BOTTOM_RIGHT" prefHeight="24.0" prefWidth="400.0" style="-fx-spacing: 20;">
+                        <Button contentDisplay="CENTER" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#onUseClick" prefHeight="25.0" prefWidth="140.0" text="Use this password" textAlignment="CENTER" />
                         <Button contentDisplay="CENTER" defaultButton="true" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#onGenerateClick" prefHeight="25.0" prefWidth="140.0" text="Generate password" textAlignment="CENTER" />
                     </HBox>
                 </VBox>
