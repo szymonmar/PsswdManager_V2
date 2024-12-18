@@ -7,10 +7,10 @@ import com.example.psswd.CommPsswd;
 import com.example.psswd.Request;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.text.Text;
+
+import java.sql.SQLOutput;
 
 
 /**
@@ -40,10 +40,21 @@ public class AddPasswordController {
     private ProgressBar progressBar;
 
     @FXML
+    private Slider slider;
+
+    @FXML
+    private Label numOfCharacters;
+
+    @FXML
     public void initialize() {
-        // Dodaj listener do textProperty
+        // Dodaj listener do passwordField
         passwordField.textProperty().addListener((observable, oldValue, newValue) -> {
             onPasswordFieldChange(newValue);
+        });
+
+        // Dodaj listener do slidera
+        slider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            numOfCharacters.setText(String.valueOf(newValue.intValue()));
         });
     }
 
@@ -92,6 +103,7 @@ public class AddPasswordController {
 
         SceneController.destroyStage(actionEvent);
     }
+
 
     public void onPasswordFieldChange(String newValue) {
         String password = passwordField.getText();

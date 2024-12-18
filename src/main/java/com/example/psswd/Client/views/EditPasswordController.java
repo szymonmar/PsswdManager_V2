@@ -13,9 +13,7 @@ import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -69,12 +67,18 @@ public class EditPasswordController implements Initializable {
     }
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        onPasswordFieldChange(passwordText.get());
         urlField.setText(passwordUrl.get());
         nameField.setText(passwordName.get());
         passwordField.setText(passwordText.get());
         // Dodaj listener do textProperty
         passwordField.textProperty().addListener((observable, oldValue, newValue) -> {
             onPasswordFieldChange(newValue);
+        });
+
+        // Dodaj listener do slidera
+        slider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            numOfCharacters.setText(String.valueOf(newValue.intValue()));
         });
     }
 
@@ -83,19 +87,27 @@ public class EditPasswordController implements Initializable {
      */
     @FXML
     private TextField passwordField;
-    @FXML
+
 
 
     /**
      * Pole tekstowe linku, który będzie korespondował z zapisanym hasłem, np. facebook.com
      */
-    private TextField urlField;
     @FXML
+    private TextField urlField;
+
 
     /**
      * Pole tekstowy nazwy, pod którą chcemy zapisać hasło, np. Facebook
      */
+    @FXML
     private TextField nameField;
+
+    @FXML
+    private Slider slider;
+
+    @FXML
+    private Label numOfCharacters;
 
     /**
      * Funkcja do zapisania zmian we wpisie bazy danych po kliknięciu przycisku "SAVE"
@@ -131,7 +143,7 @@ public class EditPasswordController implements Initializable {
     }
 
     public void onPasswordFieldChange(String newValue) {
-        String password = passwordField.getText();
+        String password = newValue;
         double passStrength = 0.0;
         double lengthFactor = 1.0;
         double charFactor = 0.0;

@@ -310,7 +310,7 @@ public class PasswordsController implements Initializable {
             EditAccountController controller = new EditAccountController();
             fxmlLoader.setController(controller);
             Parent parent = fxmlLoader.load();
-            Scene scene = new Scene(parent, 760, 530);
+            Scene scene = new Scene(parent, 770, 530);
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setScene(scene);

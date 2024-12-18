@@ -15,6 +15,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.text.Text;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -61,10 +62,21 @@ public class EditAccountController {
     private ProgressBar progressBar;
 
     @FXML
+    private Slider slider;
+
+    @FXML
+    private Label numOfCharacters;
+
+    @FXML
     public void initialize() {
         // Dodaj listener do textProperty
         newPasswordField.textProperty().addListener((observable, oldValue, newValue) -> {
             onPasswordFieldChange(newValue);
+        });
+
+        // Dodaj listener do slidera
+        slider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            numOfCharacters.setText(String.valueOf(newValue.intValue()));
         });
     }
 
@@ -152,6 +164,7 @@ public class EditAccountController {
 
 
     }
+
 
     public void onPasswordFieldChange(String newValue) {
         String password = newPasswordField.getText();
