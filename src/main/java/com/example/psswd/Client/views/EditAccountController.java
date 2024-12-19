@@ -24,6 +24,7 @@ import java.net.URL;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Random;
 import java.util.ResourceBundle;
 
 /**
@@ -66,6 +67,19 @@ public class EditAccountController {
 
     @FXML
     private Label numOfCharacters;
+
+
+    @FXML
+    private CheckBox capitals;
+
+    @FXML
+    private CheckBox numbers;
+
+    @FXML
+    private CheckBox symbols;
+
+    @FXML
+    private TextField generatedPassword;
 
     @FXML
     public void initialize() {
@@ -227,14 +241,53 @@ public class EditAccountController {
         }
     }
 
-    // todo
     public void onGenerateClick(ActionEvent actionEvent) {
+        boolean hasCapitals = capitals.isSelected();
+        boolean hasNumbers = numbers.isSelected();
+        boolean hasSymbols = symbols.isSelected();
+        double numOfChars = slider.getValue();
 
+        // Pule znaków do haseł
+        String lowercaseLetters = "abcdefghijklmnopqrstuvwxyz";
+        String uppercaseLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String digits = "0123456789";
+        String specialCharacters = "!@#$%^&*()-_=+[]{}|;:,.<>?/";
+
+        // Pula znaków do użycia w generatorze
+        StringBuilder characterPool = new StringBuilder(lowercaseLetters);
+        if (hasCapitals) {
+            characterPool.append(uppercaseLetters);
+        }
+        if (hasNumbers) {
+            characterPool.append(digits);
+        }
+        if (hasSymbols) {
+            characterPool.append(specialCharacters);
+        }
+
+        // Sprawdzenie, czy w puli są znaki
+        if (characterPool.isEmpty()) {
+            throw new IllegalStateException("Character pool is empty. Check the input parameters.");
+        }
+
+        Random random = new Random();
+        StringBuilder password = new StringBuilder();
+
+        for (int i = 0; i < numOfChars; i++) {
+            int randomIndex = random.nextInt(characterPool.length());
+            password.append(characterPool.charAt(randomIndex));
+        }
+
+        generatedPassword.setText(password.toString());
     }
 
-    // todo
     public void onUseClick(ActionEvent actionEvent) {
-
+        String password = generatedPassword.getText();
+        if(password.isEmpty()) {
+            return;
+        }
+        newPasswordField.setText(password);
+        repNewPasswordField.setText(password);
     }
 
     /**

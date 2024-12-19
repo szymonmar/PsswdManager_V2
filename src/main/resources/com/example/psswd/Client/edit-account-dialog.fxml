@@ -63,9 +63,9 @@
                         </font>
                     </Text>
                     <VBox style="-fx-spacing: 15;">
-                        <CheckBox fx:id="capitals" text="Capital letters" />
-                        <CheckBox fx:id="numbers" text="Numbers" />
-                        <CheckBox fx:id="symbols" text="Symbols" />
+                        <CheckBox fx:id="capitals" selected="true" text="Capital letters" />
+                        <CheckBox fx:id="numbers" selected="true" text="Numbers" />
+                        <CheckBox fx:id="symbols" selected="true" text="Symbols" />
 
                         <VBox prefWidth="380.0" style="-fx-spacing: 5">
                             <Label text="Number of characters" />
