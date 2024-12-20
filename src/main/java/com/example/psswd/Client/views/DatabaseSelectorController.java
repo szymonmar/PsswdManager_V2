@@ -26,6 +26,8 @@ import java.util.ResourceBundle;
  */
 public class DatabaseSelectorController implements Initializable {
 
+    private boolean loggedIn;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {}
 
@@ -52,8 +54,13 @@ public class DatabaseSelectorController implements Initializable {
         // Sprawdza która z zapamiętanych baz jest zaznaczona
         try {
             openLocalDatabase(actionEvent);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (Exception exception) {
+            AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.ERROR);
+            alertBuilder
+                    .setTitle("Error")
+                    .setHeaderText("Fatal error")
+                    .setException(exception);
+            alertBuilder.getAlert().showAndWait();
         }
     }
 
@@ -68,12 +75,15 @@ public class DatabaseSelectorController implements Initializable {
         Parent parent = fxmlLoader.load();
         UnlockDatabaseController unlockDatabaseController = fxmlLoader.<UnlockDatabaseController>getController();
         unlockDatabaseController.setUnlockPassword(unlockPassword, unlockLogin);
+
         Scene scene = new Scene(parent, 380, 210);
         Stage stage = new Stage();
         stage.setTitle("Log in");
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setScene(scene);
         stage.showAndWait();
+
+        loggedIn = unlockDatabaseController.isLoggedIn();
     }
 
     /**
@@ -90,34 +100,42 @@ public class DatabaseSelectorController implements Initializable {
             throw new RuntimeException(e);
         }
 
-
-        LoginCredentials loginCredentials = new LoginCredentials(unlockLogin.get(), unlockPassword.get());
-        // pobranie instancji połączenia
-        ConnectionHandler connectionHandlerInstance = ConnectionHandler.getInstance();
-        // przesłanie request i danych logowania
-        connectionHandlerInstance.sendObjectToServer(new Request("login"));
-        connectionHandlerInstance.sendObjectToServer(loginCredentials);
-
-        Request reply = (Request) connectionHandlerInstance.readObjectFromServer();
-
-        // jeśli zalogowano to otwiera managera
-        if(reply.getRequest().equals("success")) {
+        if(loggedIn) {
             try {
                 SceneController.setScene(actionEvent, "passwords-view.fxml"); // Otwieramy okno z danymi w bazie danych
             } catch (IOException e) {
-                AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.ERROR);
-                alertBuilder
-                        .setTitle("Error")
-                        .setHeaderText("Fatal error")
-                        .setException(e);
-                alertBuilder.getAlert().showAndWait();            }
-        } else {
-            AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.ERROR);
-            alertBuilder
-                    .setTitle("Error")
-                    .setHeaderText(reply.getRequest());
-            alertBuilder.getAlert().showAndWait();
-            return;
+                throw new RuntimeException(e);
+            }
         }
+
+//
+//        LoginCredentials loginCredentials = new LoginCredentials(unlockLogin.get(), unlockPassword.get());
+//        // pobranie instancji połączenia
+//        ConnectionHandler connectionHandlerInstance = ConnectionHandler.getInstance();
+//        // przesłanie request i danych logowania
+//        connectionHandlerInstance.sendObjectToServer(new Request("login"));
+//        connectionHandlerInstance.sendObjectToServer(loginCredentials);
+//
+//        Request reply = (Request) connectionHandlerInstance.readObjectFromServer();
+//
+//        // jeśli zalogowano to otwiera managera
+//        if(reply.getRequest().equals("success")) {
+//            try {
+//                SceneController.setScene(actionEvent, "passwords-view.fxml"); // Otwieramy okno z danymi w bazie danych
+//            } catch (IOException e) {
+//                AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.ERROR);
+//                alertBuilder
+//                        .setTitle("Error")
+//                        .setHeaderText("Fatal error")
+//                        .setException(e);
+//                alertBuilder.getAlert().showAndWait();            }
+//        } else {
+//            AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.ERROR);
+//            alertBuilder
+//                    .setTitle("Error")
+//                    .setHeaderText(reply.getRequest());
+//            alertBuilder.getAlert().showAndWait();
+//            return;
+//        }
     }
 }
