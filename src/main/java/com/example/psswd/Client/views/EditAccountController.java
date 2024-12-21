@@ -13,13 +13,19 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import java.io.IOException;
 import java.net.URL;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -52,6 +58,9 @@ public class EditAccountController {
     @FXML
     private PasswordField repNewPasswordField;
 
+    @FXML
+    private PasswordField confirmPasswordField;
+
 
     /**
      * Checkbox potwierdzający, że użytkownik zna konsekwencje usunięcia konta
@@ -80,6 +89,12 @@ public class EditAccountController {
 
     @FXML
     private TextField generatedPassword;
+
+    private boolean accDeleted = false;
+
+    public boolean isAccDeleted() {
+        return accDeleted;
+    }
 
     @FXML
     public void initialize() {
@@ -142,16 +157,18 @@ public class EditAccountController {
         if(understandCheckBox.isSelected()) {
             // pobranie instancji połączenia, wysłanie request i danych hasła
             ConnectionHandler connectionHandlerInstance = ConnectionHandler.getInstance();
-            connectionHandlerInstance.sendObjectToServer(new Request("deleteaccount"));         // todo po stronie serwera
+            connectionHandlerInstance.sendObjectToServer(new Request("deleteAcc"));
+            connectionHandlerInstance.sendObjectToServer(new LoginCredentials(confirmPasswordField.getText()));
             Request reply = (Request) connectionHandlerInstance.readObjectFromServer();
             if(reply.getRequest().equals("success")) {
+                accDeleted = true;
                 AlertBuilder infobox = new AlertBuilder(Alert.AlertType.INFORMATION);
                 infobox
                         .setTitle("Information")
                         .setHeaderText("Your account has been removed.");
                 infobox.getAlert().showAndWait();
                 try {
-                    SceneController.setScene(actionEvent, "database-selector-view.fxml");
+                    SceneController.destroyStage(actionEvent);
                 } catch (Exception exception) {
                     AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.ERROR);
                     alertBuilder
@@ -164,20 +181,19 @@ public class EditAccountController {
                 AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.ERROR);
                 alertBuilder
                         .setTitle("Error")
-                        .setHeaderText("Error occured on the server side");
+                        .setHeaderText(reply.getRequest());
                 alertBuilder.getAlert().showAndWait();
             }
         } else {
             AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.ERROR);
             alertBuilder
                     .setTitle("Error")
-                    .setHeaderText("You need to confirm that You understand further consequences of this " +
+                    .setHeaderText("You need to confirm that You understand\nfurther consequences of this " +
                             "action before proceeding");
             alertBuilder.getAlert().showAndWait();
         }
-
-
     }
+
 
 
     public void onPasswordFieldChange(String newValue) {

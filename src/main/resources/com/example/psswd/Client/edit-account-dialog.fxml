@@ -95,11 +95,21 @@
                         <Font name="System Bold" size="18.0" />
                     </font>
                 </Text>
-                <HBox prefWidth="380.0" style="-fx-spacing: 15;">
-                    <CheckBox fx:id="understandCheckBox"/>
-                    <Label text="I understand that deleting the account will result in the irreversible loss of all saved passwords." />
+                <HBox style="-fx-spacing: 50;">
+                    <VBox prefWidth="330.0" style="-fx-spacing: 5;">
+                        <children>
+                            <Label text="Enter Password" />
+                            <PasswordField fx:id="confirmPasswordField" />
+                        </children>
+                    </VBox>
+                    <VBox prefHeight="53.0" alignment="BOTTOM_CENTER">
+                        <HBox prefWidth="330.0" style="-fx-spacing: 15;">
+                            <CheckBox fx:id="understandCheckBox"/>
+                            <Label text="I understand that deleting the account will result in the irreversible loss of all saved passwords." prefWidth="300.0" wrapText="true"/>
+                        </HBox>
+                    </VBox>
                 </HBox>
-                <HBox alignment="BOTTOM_CENTER" prefHeight="24.0" prefWidth="380.0" style="-fx-spacing: 20;">
+                <HBox alignment="BOTTOM_CENTER" prefHeight="30.0" prefWidth="380.0" style="-fx-spacing: 20;">
                     <Button contentDisplay="CENTER" defaultButton="true" mnemonicParsing="false"
                             nodeOrientation="LEFT_TO_RIGHT" onAction="#onDeleteClick" prefHeight="25.0"
                             prefWidth="120.0" text="Delete Account" textAlignment="CENTER" />

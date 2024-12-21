@@ -312,12 +312,16 @@ public class PasswordsController implements Initializable {
             EditAccountController controller = new EditAccountController();
             fxmlLoader.setController(controller);
             Parent parent = fxmlLoader.load();
-            Scene scene = new Scene(parent, 770, 530);
+            Scene scene = new Scene(parent, 770, 570);
             Stage stage = new Stage();
             stage.setTitle("Account settings");
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setScene(scene);
             stage.showAndWait();
+            if(controller.isAccDeleted()) {
+                SceneController.setScene(actionEvent, "database-selector-view.fxml");
+                return;
+            }
         } catch (Exception exception) {
             AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.ERROR);
             alertBuilder
@@ -325,8 +329,6 @@ public class PasswordsController implements Initializable {
                     .setHeaderText("Failed to edit account.")
                     .setException(exception);
             alertBuilder.getAlert().showAndWait();
-        } finally {
-            update();
         }
     }
 }

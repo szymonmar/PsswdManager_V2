@@ -11,6 +11,8 @@ import javafx.collections.ObservableList;
 
 import java.io.*;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -109,6 +111,64 @@ public class ServerThread extends Thread {
                             objectOutput.writeObject(CryptoController.decryptPasswordsArray(
                                     Converters.convertToStrings(passwords)));                        }
                         break;
+                    case("editAcc"):
+                        if(loggedIn) {
+
+                        }
+                        break;
+                    case("deleteAcc"):
+                        if(loggedIn) {
+                            loginCredentials = (LoginCredentials) objectInput.readObject();
+                            Info info;
+                            try {
+                                // pobiera informacje z kontraktu o bazie danych
+                                info = sqliteDataSourceDAOFactory.getInfoDao().getInfo();
+                            } catch (Exception exception) {
+                                exception.printStackTrace();
+                                try {
+                                    objectOutput.writeObject(new Request("Failed to check password"));
+                                } catch (IOException e) {
+                                    throw new RuntimeException(e);
+                                }
+                                break;
+                            }
+                            CryptoController cryptoController = CryptoController.getInstance();
+                            boolean isValidPassword = false;
+                            try {
+                                // sprawdza czy podano dobre hasło do bazy danych
+                                cryptoController.initializeKey(loginCredentials.getHaslo());
+                                isValidPassword = cryptoController.verify(info.getChallenge());
+                            } catch (Exception exception) {
+                                    System.out.println("Failed to initialize key from password");
+                                    try {
+                                        objectOutput.writeObject(new Request("Incorrect Password"));
+                                    } catch (IOException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                    break;
+                            }
+                            if(isValidPassword) {
+                                try {
+                                    loggedIn = false;
+                                    String dbName = cryptoController.getDatabaseName();
+                                    Files.delete(Paths.get("databases/" + dbName +".pass"));
+                                    System.out.println("Plik został pomyślnie usunięty.");
+                                    objectOutput.writeObject(new Request("success"));
+                                    System.out.println("Logged out");
+                                } catch (Exception exception) {
+                                    exception.printStackTrace();
+                                    try {
+                                        objectOutput.writeObject(new Request("Failed to delete account"));
+                                    } catch (IOException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                }
+                            }
+
+
+
+                        }
+                        break;
                 }
             }
         } catch (Exception e) {
@@ -129,8 +189,16 @@ public class ServerThread extends Thread {
     }
 
     private boolean openLocalDatabase(LoginCredentials loginCredentials) {
-
         SqliteDataSourceDAOFactory sqliteDataSourceDAOFactory = SqliteDataSourceDAOFactory.getInstance();
+        boolean dbNotExists = Files.notExists(Paths.get(System.getProperty("user.dir") + "/databases/" + loginCredentials.getLogin() + ".pass"));
+        if(dbNotExists) {
+            try {
+                objectOutput.writeObject(new Request("Failed to log in"));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            return false;
+        }
         try {
             // tworzy połączenie pomiędzy kontraktem i bazą danych
             sqliteDataSourceDAOFactory.establishConnection(System.getProperty("user.dir") + "/databases/" + loginCredentials.getLogin() + ".pass");

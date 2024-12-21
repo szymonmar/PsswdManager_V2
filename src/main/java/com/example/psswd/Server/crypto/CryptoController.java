@@ -197,4 +197,8 @@ public class CryptoController {
         }
         return passwords;
     }
+
+    public String getDatabaseName() {
+        return databaseName;
+    }
 }
