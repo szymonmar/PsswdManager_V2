@@ -330,5 +330,6 @@ public class PasswordsController implements Initializable {
                     .setException(exception);
             alertBuilder.getAlert().showAndWait();
         }
+        update();
     }
 }

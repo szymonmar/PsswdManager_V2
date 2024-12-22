@@ -38,8 +38,7 @@ public class ConnectionHandler {
             AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.ERROR);
             alertBuilder
                     .setTitle("Error")
-                    .setHeaderText("Server connection error")
-                    .setException(e);
+                    .setHeaderText("Server connection error");
             alertBuilder.getAlert().showAndWait();
             System.exit(0);
         }
