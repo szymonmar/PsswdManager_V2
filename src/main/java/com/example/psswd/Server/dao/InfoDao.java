@@ -15,6 +15,11 @@ public interface InfoDao {
     public void insertInfo(Info info);
 
     /**
+     * Funkcja usuwająca dane z tabeli info, potrzebna do zmiany hasła do konta użytkownika
+     */
+    public void deleteInfo();
+
+    /**
      * Funkcja pobierająca dane z kontraktu
      */
     public Info getInfo();

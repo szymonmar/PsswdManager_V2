@@ -113,41 +113,87 @@ public class ServerThread extends Thread {
                         break;
                     case("editAcc"):
                         if(loggedIn) {
-
-                        }
-                        break;
-                    case("deleteAcc"):
-                        if(loggedIn) {
-                            loginCredentials = (LoginCredentials) objectInput.readObject();
-                            Info info;
-                            try {
-                                // pobiera informacje z kontraktu o bazie danych
-                                info = sqliteDataSourceDAOFactory.getInfoDao().getInfo();
-                            } catch (Exception exception) {
-                                exception.printStackTrace();
-                                try {
-                                    objectOutput.writeObject(new Request("Failed to check password"));
-                                } catch (IOException e) {
-                                    throw new RuntimeException(e);
-                                }
-                                break;
-                            }
+                            LoginCredentials logCreds = (LoginCredentials) objectInput.readObject();
                             CryptoController cryptoController = CryptoController.getInstance();
-                            boolean isValidPassword = false;
-                            try {
-                                // sprawdza czy podano dobre hasło do bazy danych
-                                cryptoController.initializeKey(loginCredentials.getHaslo());
-                                isValidPassword = cryptoController.verify(info.getChallenge());
-                            } catch (Exception exception) {
-                                    System.out.println("Failed to initialize key from password");
+                            if(checkPassword(logCreds)) {
+                                ObservableList<Password> psswds = FXCollections.observableArrayList(
+                                        sqliteDataSourceDAOFactory.getPasswordsDao().getPasswords());
+                                ArrayList<CommPsswd> dcPsswds = CryptoController.decryptPasswordsArray(
+                                        Converters.convertToStrings(psswds));
+                                Info info;
+                                try {
+                                    // pobiera informacje z kontraktu o bazie danych
+                                    info = sqliteDataSourceDAOFactory.getInfoDao().getInfo();
+                                } catch (Exception exception) {
+                                    exception.printStackTrace();
                                     try {
-                                        objectOutput.writeObject(new Request("Incorrect Password"));
+                                        objectOutput.writeObject(new Request("Failed to check password"));
                                     } catch (IOException e) {
                                         throw new RuntimeException(e);
                                     }
                                     break;
+                                }
+                                try {
+                                    cryptoController.initializeKey(logCreds.getNoweHaslo()); // Tworzymy klucz na podstawie hasła
+                                    info.setChallenge(cryptoController.encrypt(loginCredentials.getLogin())); // Szyfrujemy nazwę bazy danych, aby stworzych "challenge" i zapisujemy do obiektu z informacjami o bazie
+                                    info.setSalt(cryptoController.getSalt()); //Tworzymy i zapisujemy salt do obiektu z informacjami o bazie
+                                    sqliteDataSourceDAOFactory.getInfoDao().deleteInfo();
+                                    sqliteDataSourceDAOFactory.getInfoDao().insertInfo(info); // Zapisujemy informacje do kontraktu
+                                } catch (Exception exception) {
+                                    System.out.println("Failed to initialize key from password");
+                                    try {
+                                        objectOutput.writeObject(new Request("Failed to change password"));
+                                    } catch (IOException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                    break;
+                                }
+                                for (CommPsswd passwd : dcPsswds) {
+                                    sqliteDataSourceDAOFactory.getPasswordsDao().deletePassword(passwd.getId());
+                                    Password password = new Password();
+                                    password.setName(passwd.getName());
+                                    password.setUrl(passwd.getUrl());
+
+                                    try {
+                                        // Próba zakodowania hasła i zapisania go w obiekcie password
+                                        password.setPassword(cryptoController.encrypt(passwd.getPassword()));
+                                    } catch (Exception exception) {
+                                        // Wyświetlenie błędu w razie niepowodzenia
+                                        System.out.println("Failed to encrypt");
+                                        try {
+                                            objectOutput.writeObject(new Request("Failed to change password"));
+                                        } catch (IOException e) {
+                                            throw new RuntimeException(e);
+                                        }
+                                        break;
+                                    }
+                                    try {
+                                        // Próba stworzenia DAO w celu dodania wpisu do bazy danych
+                                        sqliteDataSourceDAOFactory.getPasswordsDao().insertPassword(password);
+                                    } catch (Exception exception) {
+                                        // Wyświetlenie błędu w razie niepowodzenia
+                                        System.out.println("Failed to add password to database");
+                                        try {
+                                            objectOutput.writeObject(new Request("Failed to change password"));
+                                        } catch (IOException e) {
+                                            throw new RuntimeException(e);
+                                        }
+                                        break;
+                                    }
+                                    try {
+                                        objectOutput.writeObject(new Request("success"));
+                                    } catch (IOException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                }
                             }
-                            if(isValidPassword) {
+                        }
+                        break;
+                    case("deleteAcc"):
+                        if(loggedIn) {
+                            LoginCredentials logCreds = (LoginCredentials) objectInput.readObject();
+                            CryptoController cryptoController = CryptoController.getInstance();
+                            if(checkPassword(logCreds)) {
                                 try {
                                     loggedIn = false;
                                     String dbName = cryptoController.getDatabaseName();
@@ -164,9 +210,6 @@ public class ServerThread extends Thread {
                                     }
                                 }
                             }
-
-
-
                         }
                         break;
                 }
@@ -174,6 +217,38 @@ public class ServerThread extends Thread {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private boolean checkPassword(LoginCredentials logCreds) {
+        Info info;
+        try {
+            // pobiera informacje z kontraktu o bazie danych
+            info = sqliteDataSourceDAOFactory.getInfoDao().getInfo();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            try {
+                objectOutput.writeObject(new Request("Failed to check password"));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            return false;
+        }
+        CryptoController cryptoController = CryptoController.getInstance();
+        boolean isValidPassword = false;
+        try {
+            // sprawdza czy podano dobre hasło do bazy danych
+            cryptoController.initializeKey(logCreds.getHaslo());
+            isValidPassword = cryptoController.verify(info.getChallenge());
+        } catch (Exception exception) {
+            System.out.println("Failed to initialize key from password");
+            try {
+                objectOutput.writeObject(new Request("Incorrect Password"));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            return false;
+        }
+        return isValidPassword;
     }
 
     private void closeConnection(){
@@ -268,10 +343,8 @@ public class ServerThread extends Thread {
      * Funkcja do tworzenia nowej bazy danych (nowego użytkownika) po kliknięciu "CREATE"
      */
     public boolean createLocalDatabase(LoginCredentials newUserCredentials) {
-
         String dbName = newUserCredentials.getLogin();
         String passwd = newUserCredentials.getHaslo();
-
         if (new File("databases/" + dbName +".pass").exists()) {
             System.out.println("Username already exists");
             try {
@@ -285,7 +358,6 @@ public class ServerThread extends Thread {
         // Tworzenie nowego pliku z bazą danych dla użytkownika
         File file = new File("databases/" + dbName + ".pass");
         System.out.println("Utworzono nowego usera");
-
 
         SqliteDataSourceDAOFactory sqliteDataSourceDAOFactory = SqliteDataSourceDAOFactory.getInstance();
         try {

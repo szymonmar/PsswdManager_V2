@@ -17,7 +17,8 @@ public class Main {
         if (!directory.exists()) {
             // Próba utworzenia katalogu
             if (!directory.mkdirs()) {
-                // ERROR
+                System.out.println("Nie udało sie utworzyć katalogu głównego!");
+                return;
             }
         }
 
