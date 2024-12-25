@@ -29,6 +29,7 @@ import javafx.util.Callback;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 /**
@@ -243,20 +244,28 @@ public class PasswordsController implements Initializable {
         if(passwordsTable.getSelectionModel().isEmpty()) {
             return;
         }
-
-        // pobranie instancji połączenia, przesłanie request i danych hasła do usunięcia
-        ConnectionHandler connectionHandlerInstance = ConnectionHandler.getInstance();
-        connectionHandlerInstance.sendObjectToServer(new Request("delete"));
-        connectionHandlerInstance.sendObjectToServer(Converters.convertToString(passwordsTable.getSelectionModel().getSelectedItem()));
-        Request reply = (Request) connectionHandlerInstance.readObjectFromServer();
-        if(reply.getRequest().equals("success")) {
-            update();
-        } else {
-            AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.ERROR);
-            alertBuilder
-                    .setTitle("Error")
-                    .setHeaderText(reply.getRequest());
-            alertBuilder.getAlert().showAndWait();
+        AlertBuilder confirm = new AlertBuilder(Alert.AlertType.CONFIRMATION);
+        confirm
+                .setTitle("Confirm")
+                .setHeaderText("Are You sure You want to delete this password?\nThis action cannot be reversed");
+        // Wyświetlenie alertu i oczekiwanie na odpowiedź użytkownika
+        Optional<ButtonType> result = confirm.getAlert().showAndWait();
+        // Sprawdzenie wyboru użytkownika
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            // pobranie instancji połączenia, przesłanie request i danych hasła do usunięcia
+            ConnectionHandler connectionHandlerInstance = ConnectionHandler.getInstance();
+            connectionHandlerInstance.sendObjectToServer(new Request("delete"));
+            connectionHandlerInstance.sendObjectToServer(Converters.convertToString(passwordsTable.getSelectionModel().getSelectedItem()));
+            Request reply = (Request) connectionHandlerInstance.readObjectFromServer();
+            if (reply.getRequest().equals("success")) {
+                update();
+            } else {
+                AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.ERROR);
+                alertBuilder
+                        .setTitle("Error")
+                        .setHeaderText(reply.getRequest());
+                alertBuilder.getAlert().showAndWait();
+            }
         }
         update();
     }
