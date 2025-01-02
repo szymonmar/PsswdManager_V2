@@ -212,6 +212,12 @@ public class ServerThread extends Thread {
                             }
                         }
                         break;
+                    case("dictionary"):
+                        CommPsswd commPsswd = (CommPsswd) objectInput.readObject();
+
+                        // todo
+
+                        break;
                 }
             }
         } catch (Exception e) {

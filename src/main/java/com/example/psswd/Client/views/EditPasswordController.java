@@ -293,12 +293,48 @@ public class EditPasswordController implements Initializable {
     }
 
     public void onDictClick(ActionEvent actionEvent) {
+        CommPsswd checkPsswd = new CommPsswd();
+        checkPsswd.setPassword(passwordField.getText());
+
+        // pobranie instancji połączenia
+        ConnectionHandler connectionHandlerInstance = ConnectionHandler.getInstance();
+        // wysłanie request i hasła do testu
+        connectionHandlerInstance.sendObjectToServer(new Request("dictionary"));
+        connectionHandlerInstance.sendObjectToServer(checkPsswd);
         try {
             // wyświetla okno testu ataku słownikowego
             showDictionaryDialog();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        Request reply = (Request) connectionHandlerInstance.readObjectFromServer();
+
+        if(reply.getRequest().equals("success")) {
+            AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.INFORMATION);
+            alertBuilder
+                    .setTitle("Test passed")
+                    .setHeaderText("Your password passed the dictionary attack test.");
+            alertBuilder.getAlert().showAndWait();
+            SceneController.destroyStage(actionEvent);
+            return;
+        } else if(reply.getRequest().equals("fail")) {
+            AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.WARNING);
+            alertBuilder
+                    .setTitle("Test failed")
+                    .setHeaderText("Your password did not pass the dictionary attack test.");
+            alertBuilder.getAlert().showAndWait();
+            SceneController.destroyStage(actionEvent);
+            return;
+        } else {
+            AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.ERROR);
+            alertBuilder
+                    .setTitle("Error")
+                    .setHeaderText(reply.getRequest());
+            alertBuilder.getAlert().showAndWait();
+        }
+
+        SceneController.destroyStage(actionEvent);
     }
 
 }
