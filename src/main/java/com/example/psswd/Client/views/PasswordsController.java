@@ -340,4 +340,9 @@ public class PasswordsController implements Initializable {
             alertBuilder.getAlert().showAndWait();
         }
     }
+
+    // todo
+    public void onCvsClick(ActionEvent actionEvent) {
+
+    }
 }

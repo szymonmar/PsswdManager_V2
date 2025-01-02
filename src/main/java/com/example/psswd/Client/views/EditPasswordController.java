@@ -12,12 +12,18 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import java.io.IOException;
 import java.net.URL;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -272,5 +278,27 @@ public class EditPasswordController implements Initializable {
         SceneController.destroyStage(actionEvent);
     }
 
+    /**
+     * Funkcja do wyświetlania okna testu ataku słownikowego
+     */
+    private void showDictionaryDialog() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(SceneController.class.getResource("dict-attack-dialog.fxml"));
+        Parent parent = fxmlLoader.load();
+        Scene scene = new Scene(parent, 380, 210);
+        Stage stage = new Stage();
+        stage.setTitle("Dictionary Attack Test");
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setScene(scene);
+        stage.showAndWait();
+    }
+
+    public void onDictClick(ActionEvent actionEvent) {
+        try {
+            // wyświetla okno testu ataku słownikowego
+            showDictionaryDialog();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }
