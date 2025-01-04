@@ -10,6 +10,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressIndicator?>
 <Pane VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.psswd.Client.views.DictionaryAttackDialog">
     <children>
         <VBox  layoutY="3.0" prefHeight="210.0" prefWidth="380.0" style="-fx-spacing: 35; -fx-padding: 25;">
@@ -18,12 +19,11 @@
                     <Font name="System Bold" size="18.0" />
                 </font>
             </Text>
-            <VBox style="-fx-spacing: 5;">
+            <HBox alignment="BOTTOM_CENTER" style="-fx-spacing: 5;">
                 <children>
-                    <Label text="Progress" />
-                    <ProgressBar fx:id="progressBar" prefWidth="380.0" prefHeight="10.0" progress="0.0" style="-fx-accent: #439eee;" />
+                    <ProgressIndicator fx:id="progressIndicator" progress="-1.0" prefWidth="200" prefHeight="200"/>
                 </children>
-            </VBox>
+            </HBox>
             <HBox alignment="BOTTOM_RIGHT" prefHeight="25.0" prefWidth="380.0" style="-fx-spacing: 10;">
                 <Button cancelButton="true" contentDisplay="CENTER" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#onCancelClick" prefHeight="25.0" prefWidth="60.0" text="Cancel" textAlignment="CENTER" />
             </HBox>

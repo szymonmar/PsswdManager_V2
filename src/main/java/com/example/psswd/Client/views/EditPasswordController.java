@@ -278,19 +278,7 @@ public class EditPasswordController implements Initializable {
         SceneController.destroyStage(actionEvent);
     }
 
-    /**
-     * Funkcja do wyświetlania okna testu ataku słownikowego
-     */
-    private void showDictionaryDialog() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(SceneController.class.getResource("dict-attack-dialog.fxml"));
-        Parent parent = fxmlLoader.load();
-        Scene scene = new Scene(parent, 380, 210);
-        Stage stage = new Stage();
-        stage.setTitle("Dictionary Attack Test");
-        stage.initModality(Modality.APPLICATION_MODAL);
-        stage.setScene(scene);
-        stage.showAndWait();
-    }
+
 
     public void onDictClick(ActionEvent actionEvent) {
         CommPsswd checkPsswd = new CommPsswd();
@@ -301,12 +289,7 @@ public class EditPasswordController implements Initializable {
         // wysłanie request i hasła do testu
         connectionHandlerInstance.sendObjectToServer(new Request("dictionary"));
         connectionHandlerInstance.sendObjectToServer(checkPsswd);
-        try {
-            // wyświetla okno testu ataku słownikowego
-            showDictionaryDialog();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+
 
         Request reply = (Request) connectionHandlerInstance.readObjectFromServer();
 
@@ -316,16 +299,12 @@ public class EditPasswordController implements Initializable {
                     .setTitle("Test passed")
                     .setHeaderText("Your password passed the dictionary attack test.");
             alertBuilder.getAlert().showAndWait();
-            SceneController.destroyStage(actionEvent);
-            return;
         } else if(reply.getRequest().equals("fail")) {
             AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.WARNING);
             alertBuilder
                     .setTitle("Test failed")
                     .setHeaderText("Your password did not pass the dictionary attack test.");
             alertBuilder.getAlert().showAndWait();
-            SceneController.destroyStage(actionEvent);
-            return;
         } else {
             AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.ERROR);
             alertBuilder
@@ -334,7 +313,6 @@ public class EditPasswordController implements Initializable {
             alertBuilder.getAlert().showAndWait();
         }
 
-        SceneController.destroyStage(actionEvent);
     }
 
 }

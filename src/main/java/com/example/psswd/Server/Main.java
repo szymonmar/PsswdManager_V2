@@ -1,25 +1,38 @@
 package com.example.psswd.Server;
 
+import com.example.psswd.Server.dictTester.DictionaryDAOFactory;
+
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.io.File;
 
 public class Main {
 
     public static void main(String[] args) {
-        //using serversocket as argument to automatically close the socket
-        //the port number is unique for each server
-
-
+        // Sprawdzamy, czy katalogi istnieją
         File directory = new File(System.getProperty("user.dir") + "/databases/");
-        // Sprawdzamy, czy katalog istnieje
         if (!directory.exists()) {
             // Próba utworzenia katalogu
             if (!directory.mkdirs()) {
                 System.out.println("Nie udało sie utworzyć katalogu głównego!");
                 return;
             }
+        }
+        directory = new File(System.getProperty("user.dir") + "/dict/");
+        if (!directory.exists()) {
+            if (!directory.mkdirs()) {
+                System.out.println("Nie udało sie utworzyć katalogu dla słownika!");
+                return;
+            }
+        }
+
+        DictionaryDAOFactory dictionaryDAOFactory = DictionaryDAOFactory.getInstance();
+        try {
+            dictionaryDAOFactory.establishConnection();
+        } catch(Exception exception) {
+            System.out.println("Błąd podczas inicjalizacji słownika!");
         }
 
         //list to add all the clients thread
