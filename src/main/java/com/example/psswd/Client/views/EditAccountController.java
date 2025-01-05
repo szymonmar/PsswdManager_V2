@@ -114,7 +114,16 @@ public class EditAccountController {
      * @param actionEvent event wywołujący funkcję (kliknięcie SAVE) [ActionEvent]
      */
     public void onSaveClick(ActionEvent actionEvent) {
-        if(this.newPasswordField.getText().equals(this.repNewPasswordField.getText())) {
+        String pass = newPasswordField.getText();
+        String repPass = repNewPasswordField.getText();
+        if(pass.isEmpty() || repPass.isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Password field is empty.");
+            alert.showAndWait();
+            return;
+        }
+        if(pass.equals(repPass)) {
             // pobranie danych z frontendu
             LoginCredentials loginCredentials = new LoginCredentials(this.oldPasswordField.getText());
             loginCredentials.setNoweHaslo(this.newPasswordField.getText());
@@ -317,8 +326,17 @@ public class EditAccountController {
 
 
     public void onDictClick(ActionEvent actionEvent) {
+        String pass = newPasswordField.getText();
+        if(pass.isEmpty()) {
+            AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.WARNING);
+            alertBuilder
+                    .setTitle("Test failed")
+                    .setHeaderText("Password field is empty!");
+            alertBuilder.getAlert().showAndWait();
+            return;
+        }
         CommPsswd checkPsswd = new CommPsswd();
-        checkPsswd.setPassword(newPasswordField.getText());
+        checkPsswd.setPassword(pass);
 
         // pobranie instancji połączenia
         ConnectionHandler connectionHandlerInstance = ConnectionHandler.getInstance();

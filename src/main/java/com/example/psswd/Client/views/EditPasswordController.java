@@ -133,12 +133,31 @@ public class EditPasswordController implements Initializable {
      * @param actionEvent event wywołujący funkcję (kliknięcie SAVE) [ActionEvent]
      */
     public void onSaveClick(ActionEvent actionEvent) {
+        String name = nameField.getText();
+        String pass = passwordField.getText();
+        if(name.isEmpty()) {
+            AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.WARNING);
+            alertBuilder
+                    .setTitle("Warning")
+                    .setHeaderText("Name field is empty!");
+            alertBuilder.getAlert().showAndWait();
+            return;
+        }
+        if(pass.isEmpty()) {
+            AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.WARNING);
+            alertBuilder
+                    .setTitle("Warning")
+                    .setHeaderText("Password field is empty!");
+            alertBuilder.getAlert().showAndWait();
+            return;
+        }
+
         // pobranie danych z frontendu
         CommPsswd commPsswd = new CommPsswd();
         commPsswd.setId(this.passwordId.get());
-        commPsswd.setName(nameField.getText());
+        commPsswd.setName(name);
         commPsswd.setUrl(urlField.getText());
-        commPsswd.setPassword(passwordField.getText());
+        commPsswd.setPassword(pass);
 
         // pobranie instancji połączenia, wysłanie request i danych hasła
         ConnectionHandler connectionHandlerInstance = ConnectionHandler.getInstance();
@@ -281,8 +300,17 @@ public class EditPasswordController implements Initializable {
 
 
     public void onDictClick(ActionEvent actionEvent) {
+        String pass = passwordField.getText();
+        if(pass.isEmpty()) {
+            AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.WARNING);
+            alertBuilder
+                    .setTitle("Test failed")
+                    .setHeaderText("Password field is empty!");
+            alertBuilder.getAlert().showAndWait();
+            return;
+        }
         CommPsswd checkPsswd = new CommPsswd();
-        checkPsswd.setPassword(passwordField.getText());
+        checkPsswd.setPassword(pass);
 
         // pobranie instancji połączenia
         ConnectionHandler connectionHandlerInstance = ConnectionHandler.getInstance();

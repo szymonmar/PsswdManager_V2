@@ -91,10 +91,28 @@ public class AddPasswordController {
      * @param actionEvent event wywołujący funkcję (kliknięcie ADD) [ActionEvent]
      */
     public void onAddClick(ActionEvent actionEvent) {
+        String name = nameField.getText();
+        String pass = passwordField.getText();
+        if(name.isEmpty()) {
+            AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.WARNING);
+            alertBuilder
+                    .setTitle("Warning")
+                    .setHeaderText("Name field is empty!");
+            alertBuilder.getAlert().showAndWait();
+            return;
+        }
+        if(pass.isEmpty()) {
+            AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.WARNING);
+            alertBuilder
+                    .setTitle("Warning")
+                    .setHeaderText("Password field is empty!");
+            alertBuilder.getAlert().showAndWait();
+            return;
+        }
         CommPsswd addedPsswd = new CommPsswd();
-        addedPsswd.setName(nameField.getText());
+        addedPsswd.setName(name);
         addedPsswd.setUrl(urlField.getText());
-        addedPsswd.setPassword(passwordField.getText());
+        addedPsswd.setPassword(pass);
 
         // pobranie instancji połączenia
         ConnectionHandler connectionHandlerInstance = ConnectionHandler.getInstance();
@@ -235,8 +253,17 @@ public class AddPasswordController {
 
 
     public void onDictClick(ActionEvent actionEvent) {
+        String pass = passwordField.getText();
+        if(pass.isEmpty()) {
+            AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.WARNING);
+            alertBuilder
+                    .setTitle("Test failed")
+                    .setHeaderText("Password field is empty!");
+            alertBuilder.getAlert().showAndWait();
+            return;
+        }
         CommPsswd checkPsswd = new CommPsswd();
-        checkPsswd.setPassword(passwordField.getText());
+        checkPsswd.setPassword(pass);
 
         // pobranie instancji połączenia
         ConnectionHandler connectionHandlerInstance = ConnectionHandler.getInstance();

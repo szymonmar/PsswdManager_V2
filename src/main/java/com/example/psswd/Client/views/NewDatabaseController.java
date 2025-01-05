@@ -107,6 +107,14 @@ public class NewDatabaseController {
             return;
         }
 
+        if(passwd.isEmpty() || passwdRepeat.isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Password field is empty.");
+            alert.showAndWait();
+            return;
+        }
+
         // Sprawdza czy hasło jest powtórzone dwa razy
         if(!passwd.equals(passwdRepeat)) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -255,9 +263,17 @@ public class NewDatabaseController {
 
 
     public void onDictClick(ActionEvent actionEvent) {
+        String pass = passwordField.getText();
+        if(pass.isEmpty()) {
+            AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.WARNING);
+            alertBuilder
+                    .setTitle("Test failed")
+                    .setHeaderText("Password field is empty!");
+            alertBuilder.getAlert().showAndWait();
+            return;
+        }
         CommPsswd checkPsswd = new CommPsswd();
-        checkPsswd.setPassword(passwordField.getText());
-
+        checkPsswd.setPassword(pass);
         // pobranie instancji połączenia
         ConnectionHandler connectionHandlerInstance = ConnectionHandler.getInstance();
         // wysłanie request i hasła do testu

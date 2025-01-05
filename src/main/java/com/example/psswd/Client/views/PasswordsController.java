@@ -204,6 +204,7 @@ public class PasswordsController implements Initializable {
      * @param actionEvent event wywołujący funkcję (kliknięcie EDIT) [ActionEvent]
      * @throws IOException jeśli wystąpi błąd strumienia wejścia / wyjścia
      */
+    @FXML
     public void onEditClick(ActionEvent actionEvent) {
         if(passwordsTable.getSelectionModel().isEmpty()) {
             return;
@@ -235,11 +236,11 @@ public class PasswordsController implements Initializable {
         }
     }
 
-    // todo add confirmation before deleting
     /**
      * Funkcja do usuwania wpisu z bazy danych po kliknięciu przycisku "DELETE"
      * @param actionEvent event wywołujący funkcję (kliknięcie DELETE) [ActionEvent]
      */
+    @FXML
     public void onDeleteClick(ActionEvent actionEvent) {
         if(passwordsTable.getSelectionModel().isEmpty()) {
             return;
@@ -275,6 +276,7 @@ public class PasswordsController implements Initializable {
      * @param actionEvent event wywołujący funkcję (kliknięcie ADD) [ActionEvent]
      * @throws IOException jeśli wystąpi błąd strumienia wejścia / wyjścia
      */
+    @FXML
     public void onAddClick(ActionEvent actionEvent) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(SceneController.class.getResource("add-password-dialog.fxml"));
         Parent parent = fxmlLoader.load();
@@ -291,6 +293,7 @@ public class PasswordsController implements Initializable {
      * Funkcja do zamknięcia bazy, wywołująca powrót do menu wyboru baz "BACK"
      * @param actionEvent event wywołujący funkcję (kliknięcie BACK) [ActionEvent]
      */
+    @FXML
     public void onBackClick(ActionEvent actionEvent) {
         ConnectionHandler connectionHandler = ConnectionHandler.getInstance();
         connectionHandler.sendObjectToServer(new Request("logout"));
@@ -315,6 +318,7 @@ public class PasswordsController implements Initializable {
         }
     }
 
+    @FXML
     public void onAccountClick(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(SceneController.class.getResource("edit-account-dialog.fxml"));
@@ -341,8 +345,19 @@ public class PasswordsController implements Initializable {
         }
     }
 
-    // todo
-    public void onCvsClick(ActionEvent actionEvent) {
+    /**
+     * Funkcja do wyświetlania okna CSV
+     */
+    @FXML
+    private void onCsvClick(ActionEvent actionEvent) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(SceneController.class.getResource("csv-dialog.fxml"));
+        Parent parent = fxmlLoader.load();
 
+        Scene scene = new Scene(parent, 380, 240);
+        Stage stage = new Stage();
+        stage.setTitle("CSV");
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setScene(scene);
+        stage.showAndWait();
     }
 }
