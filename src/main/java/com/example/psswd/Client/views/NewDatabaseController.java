@@ -159,7 +159,7 @@ public class NewDatabaseController {
         boolean hasUpperCase = password.matches(".*[A-Z].*");
         boolean hasLowerCase = password.matches(".*[a-z].*");
         boolean hasDigit = password.matches(".*\\d.*");
-        boolean hasSpecialChars = password.matches(".*[^a-zA-Z0-9 ].*");
+        boolean hasSpecialChars = password.matches(".*[#$&@!+=?].*");
 
         if(password.isEmpty()) {
             progressBar.setProgress(0);
@@ -222,7 +222,7 @@ public class NewDatabaseController {
         String lowercaseLetters = "abcdefghijklmnopqrstuvwxyz";
         String uppercaseLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         String digits = "0123456789";
-        String specialCharacters = "!@#$%^&*()-_=+[]{}|;:,.<>?/";
+        String specialCharacters = "#$&@!+=?";
 
         // Pula znaków do użycia w generatorze
         StringBuilder characterPool = new StringBuilder(lowercaseLetters);

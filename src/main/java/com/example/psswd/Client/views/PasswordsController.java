@@ -7,6 +7,7 @@ import com.example.psswd.CommPsswd;
 import com.example.psswd.Client.model.Converters;
 import com.example.psswd.Client.model.Password;
 import com.example.psswd.Request;
+import com.example.psswd.Server.dao.sqlite.SqliteDataSourceDAOFactory;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -76,6 +77,8 @@ public class PasswordsController implements Initializable {
     @FXML
     private TableView<Password> passwordsTable;
     private ObservableList<Password> passwords = FXCollections.observableArrayList();
+
+    public static ArrayList<CommPsswd> pass;
 
 
     /**
@@ -157,7 +160,7 @@ public class PasswordsController implements Initializable {
                 };
         passwordCol.setCellFactory(cellFactory);
         ConnectionHandler connectionHandler = ConnectionHandler.getInstance();
-        ArrayList<CommPsswd> pass = (ArrayList<CommPsswd>) connectionHandler.readObjectFromServer();
+        pass = (ArrayList<CommPsswd>) connectionHandler.readObjectFromServer();
         passwords = FXCollections.observableArrayList(Converters.convertToObservable(pass));
 
         // obsługa wyszukiwania
@@ -195,7 +198,7 @@ public class PasswordsController implements Initializable {
     private void update() {
         ConnectionHandler connectionHandler = ConnectionHandler.getInstance();
         connectionHandler.sendObjectToServer(new Request("update"));
-        ArrayList<CommPsswd> pass = (ArrayList<CommPsswd>) connectionHandler.readObjectFromServer();
+        pass = (ArrayList<CommPsswd>) connectionHandler.readObjectFromServer();
         passwords.setAll(FXCollections.observableArrayList(Converters.convertToObservable(pass)));
     }
 
@@ -359,5 +362,6 @@ public class PasswordsController implements Initializable {
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setScene(scene);
         stage.showAndWait();
+        update();
     }
 }
