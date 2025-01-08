@@ -356,7 +356,7 @@ public class PasswordsController implements Initializable {
         FXMLLoader fxmlLoader = new FXMLLoader(SceneController.class.getResource("csv-dialog.fxml"));
         Parent parent = fxmlLoader.load();
 
-        Scene scene = new Scene(parent, 380, 240);
+        Scene scene = new Scene(parent, 420, 450);
         Stage stage = new Stage();
         stage.setTitle("CSV");
         stage.initModality(Modality.APPLICATION_MODAL);

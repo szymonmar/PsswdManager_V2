@@ -11,8 +11,14 @@ import com.opencsv.CSVWriter;
 import com.opencsv.CSVWriterBuilder;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
+import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.TextField;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.FileReader;
 
 import java.io.FileWriter;
@@ -21,57 +27,43 @@ import java.util.ArrayList;
 
 public class CSVController {
 
+    @FXML
+    public TextField importFilePathField;
 
-    // todo add file path field
+    @FXML
+    public TextField exportFilePathField;
+
+    @FXML
     public void onImportClick(ActionEvent actionEvent) {
-        String csvFile = System.getProperty("user.dir") + "/dict/output.csv";
+        String csvFile = importFilePathField.getText();
         ConnectionHandler connectionHandlerInstance = ConnectionHandler.getInstance();
 
         try (CSVReader reader = new CSVReader(new FileReader(csvFile))) {
             String[] line;
             line = reader.readNext();
-            int nameIdx, urlIdx, passwdIdx;
+            int nameIdx = -1;
+            int urlIdx = -1;
+            int passwdIdx = -1;
 
             // walidacja formatu CSV
             if(line == null) {
                 throw new CsvValidationException();
             }
-            if(line[0].equalsIgnoreCase("name")) {
-                nameIdx = 0;
-            }
-            else if(line[1].equalsIgnoreCase("name")) {
-                nameIdx = 1;
-            }
-            else if(line[2].equalsIgnoreCase("name")) {
-                nameIdx = 2;
-            } else {
-                throw new CsvValidationException();
-            }
-
-            if(line[0].equalsIgnoreCase("url")) {
-                urlIdx = 0;
-            }
-            else if(line[1].equalsIgnoreCase("url")) {
-                urlIdx = 1;
-            }
-            else if(line[2].equalsIgnoreCase("url")) {
-                urlIdx = 2;
-            } else {
-                throw new CsvValidationException();
+            for (int i = 0; i < line.length; i++) {
+                if(line[i].equalsIgnoreCase("name")) {
+                    nameIdx = i;
+                }
+                if(line[i].equalsIgnoreCase("url")) {
+                    urlIdx = i;
+                }
+                if(line[i].equalsIgnoreCase("password")) {
+                    passwdIdx = i;
+                }
             }
 
-            if(line[0].equalsIgnoreCase("password")) {
-                passwdIdx = 0;
-            }
-            else if(line[1].equalsIgnoreCase("password")) {
-                passwdIdx = 1;
-            }
-            else if(line[2].equalsIgnoreCase("password")) {
-                passwdIdx = 2;
-            } else {
+            if(nameIdx == -1 || urlIdx == -1 || passwdIdx == -1) {
                 throw new CsvValidationException();
             }
-
 
             while ((line = reader.readNext()) != null) {
                 CommPsswd commPsswd = new CommPsswd();
@@ -103,9 +95,10 @@ public class CSVController {
         }
     }
 
-    // todo add file path field
+    @FXML
     public void onExportClick(ActionEvent actionEvent) {
-        String csvFile = System.getProperty("user.dir") + "/dict/output.csv";
+        String csvFile = exportFilePathField.getText() + "/passwdExport.csv";
+        System.out.println(csvFile);
 
         try (CSVWriter writer = (CSVWriter) new CSVWriterBuilder(new FileWriter(csvFile))
                 .withQuoteChar(ICSVWriter.NO_QUOTE_CHARACTER).build()) {
@@ -133,6 +126,48 @@ public class CSVController {
         }
     }
 
+    @FXML
+    public void chooseExportFile(ActionEvent actionEvent){
+        // Tworzymy okno wyboru folderu
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setTitle("Choose folder for export");
+
+        // Opcjonalnie ustawiamy domyślny katalog
+        directoryChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+
+        // Pobierz scenę z TextField
+        Stage stage = (Stage) exportFilePathField.getScene().getWindow();
+        File selectedDirectory = directoryChooser.showDialog(stage);
+
+        if (selectedDirectory != null) {
+            exportFilePathField.setText(selectedDirectory.getAbsolutePath());
+        }
+    }
+
+    @FXML
+    public void chooseImportFile(ActionEvent actionEvent){
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Choose file to import");
+
+        // Opcjonalne: Ustaw domyślny katalog
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+
+        // Opcjonalne: Filtry plików
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("CSV files", "*.csv"),
+                new FileChooser.ExtensionFilter("All files", "*.*")
+        );
+
+        // Pobierz scenę z TextField
+        Stage stage = (Stage) importFilePathField.getScene().getWindow();
+        File selectedFile = fileChooser.showOpenDialog(stage);
+
+        if (selectedFile != null) {
+            importFilePathField.setText(selectedFile.getAbsolutePath());
+        }
+    }
+
+    @FXML
     public void onCancelClick(ActionEvent actionEvent) {
         SceneController.destroyStage(actionEvent);
     }
