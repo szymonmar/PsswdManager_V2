@@ -3,6 +3,7 @@ package com.example.psswd.Client.views;
 import com.example.psswd.Client.ConnectionHandler;
 import com.example.psswd.Client.SceneController;
 import com.example.psswd.Client.alert.AlertBuilder;
+import com.example.psswd.Client.generator.PasswordGenerator;
 import com.example.psswd.CommPsswd;
 import com.example.psswd.LoginCredentials;
 import com.example.psswd.Request;
@@ -152,7 +153,73 @@ public class NewDatabaseController {
     }
 
     public void onPasswordFieldChange(String newValue) {
-        String password = passwordField.getText();
+        passwordStrengthBarController(newValue);
+    }
+
+    public void onGenerateClick(ActionEvent actionEvent) {
+        boolean hasCapitals = capitals.isSelected();
+        boolean hasNumbers = numbers.isSelected();
+        boolean hasSymbols = symbols.isSelected();
+        double numOfChars = slider.getValue();
+
+        String pass = PasswordGenerator.generatePassword(
+                hasCapitals, hasNumbers, hasSymbols, numOfChars);
+
+        generatedPassword.setText(pass);
+    }
+
+    public void onUseClick(ActionEvent actionEvent) {
+        String password = generatedPassword.getText();
+        if(password.isEmpty()) {
+            return;
+        }
+        passwordField.setText(password);
+        passwordRepeatField.setText(password);
+    }
+
+
+    public void onDictClick(ActionEvent actionEvent) {
+        String pass = passwordField.getText();
+        if(pass.isEmpty()) {
+            AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.WARNING);
+            alertBuilder
+                    .setTitle("Test failed")
+                    .setHeaderText("Password field is empty!");
+            alertBuilder.getAlert().showAndWait();
+            return;
+        }
+        CommPsswd checkPsswd = new CommPsswd();
+        checkPsswd.setPassword(pass);
+        // pobranie instancji połączenia
+        ConnectionHandler connectionHandlerInstance = ConnectionHandler.getInstance();
+        // wysłanie request i hasła do testu
+        connectionHandlerInstance.sendObjectToServer(new Request("dictionary"));
+        connectionHandlerInstance.sendObjectToServer(checkPsswd);
+
+        Request reply = (Request) connectionHandlerInstance.readObjectFromServer();
+
+        if(reply.getRequest().equals("success")) {
+            AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.INFORMATION);
+            alertBuilder
+                    .setTitle("Test passed")
+                    .setHeaderText("Your password passed the dictionary attack test.");
+            alertBuilder.getAlert().showAndWait();
+        } else if(reply.getRequest().equals("fail")) {
+            AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.WARNING);
+            alertBuilder
+                    .setTitle("Test failed")
+                    .setHeaderText("Your password did not pass the dictionary attack test.");
+            alertBuilder.getAlert().showAndWait();
+        } else {
+            AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.ERROR);
+            alertBuilder
+                    .setTitle("Error")
+                    .setHeaderText(reply.getRequest());
+            alertBuilder.getAlert().showAndWait();
+        }
+    }
+
+    public void passwordStrengthBarController(String password) {
         double passStrength = 0.0;
         double lengthFactor = 1.0;
         double charFactor = 0.0;
@@ -211,94 +278,4 @@ public class NewDatabaseController {
             progressBar.setStyle("-fx-accent: #4CAF50;");
         }
     }
-
-    public void onGenerateClick(ActionEvent actionEvent) {
-        boolean hasCapitals = capitals.isSelected();
-        boolean hasNumbers = numbers.isSelected();
-        boolean hasSymbols = symbols.isSelected();
-        double numOfChars = slider.getValue();
-
-        // Pule znaków do haseł
-        String lowercaseLetters = "abcdefghijklmnopqrstuvwxyz";
-        String uppercaseLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        String digits = "0123456789";
-        String specialCharacters = "#$&@!+=?";
-
-        // Pula znaków do użycia w generatorze
-        StringBuilder characterPool = new StringBuilder(lowercaseLetters);
-        if (hasCapitals) {
-            characterPool.append(uppercaseLetters);
-        }
-        if (hasNumbers) {
-            characterPool.append(digits);
-        }
-        if (hasSymbols) {
-            characterPool.append(specialCharacters);
-        }
-
-        // Sprawdzenie, czy w puli są znaki
-        if (characterPool.isEmpty()) {
-            throw new IllegalStateException("Character pool is empty. Check the input parameters.");
-        }
-
-        Random random = new Random();
-        StringBuilder password = new StringBuilder();
-
-        for (int i = 0; i < numOfChars; i++) {
-            int randomIndex = random.nextInt(characterPool.length());
-            password.append(characterPool.charAt(randomIndex));
-        }
-
-        generatedPassword.setText(password.toString());
-    }
-
-    public void onUseClick(ActionEvent actionEvent) {
-        String password = generatedPassword.getText();
-        if(password.isEmpty()) {
-            return;
-        }
-        passwordField.setText(password);
-        passwordRepeatField.setText(password);
-    }
-
-
-    public void onDictClick(ActionEvent actionEvent) {
-        String pass = passwordField.getText();
-        if(pass.isEmpty()) {
-            AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.WARNING);
-            alertBuilder
-                    .setTitle("Test failed")
-                    .setHeaderText("Password field is empty!");
-            alertBuilder.getAlert().showAndWait();
-            return;
-        }
-        CommPsswd checkPsswd = new CommPsswd();
-        checkPsswd.setPassword(pass);
-        // pobranie instancji połączenia
-        ConnectionHandler connectionHandlerInstance = ConnectionHandler.getInstance();
-        // wysłanie request i hasła do testu
-        connectionHandlerInstance.sendObjectToServer(new Request("dictionary"));
-        connectionHandlerInstance.sendObjectToServer(checkPsswd);
-
-        Request reply = (Request) connectionHandlerInstance.readObjectFromServer();
-
-        if(reply.getRequest().equals("success")) {
-            AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.INFORMATION);
-            alertBuilder
-                    .setTitle("Test passed")
-                    .setHeaderText("Your password passed the dictionary attack test.");
-            alertBuilder.getAlert().showAndWait();
-        } else if(reply.getRequest().equals("fail")) {
-            AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.WARNING);
-            alertBuilder
-                    .setTitle("Test failed")
-                    .setHeaderText("Your password did not pass the dictionary attack test.");
-            alertBuilder.getAlert().showAndWait();
-        } else {
-            AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.ERROR);
-            alertBuilder
-                    .setTitle("Error")
-                    .setHeaderText(reply.getRequest());
-            alertBuilder.getAlert().showAndWait();
-        }}
 }

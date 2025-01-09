@@ -13,25 +13,18 @@ import java.sql.SQLException;
 
 public class DictionaryDAOFactory {
     /**
-     * Instancja SqliteDataSourceDAOFactory
+     * DictionaryDAOFactory instance
      */
     private static DictionaryDAOFactory dictionaryDAOFactoryInstance;
 
     /**
-     * źródło danych
+     * Data source
      */
     private static SQLiteConnectionPoolDataSource dataSource;
 
     /**
-     * Konstruktor obiektów typu SqliteDataSourceDAOFactory
-     */
-    private DictionaryDAOFactory(){
-
-    }
-
-    /**
-     * Tworzy i zwraca instancję SqliteDataSourceDAOFactory
-     * @return instancja SqliteDataSourceDAOFactory
+     * Creates and returns DictionaryDAOFactory instance
+     * @return DictionaryDAOFactory instance
      */
     public static DictionaryDAOFactory getInstance() {
         if (dictionaryDAOFactoryInstance == null) {
@@ -41,8 +34,8 @@ public class DictionaryDAOFactory {
     }
 
     /**
-     * Funkcja nawiązująca połączenie z bazą danych
-     * @throws SQLException jeśli wystąpił błąd związany z bazą danych
+     * Establishes database connection
+     * @throws SQLException if SQLite database error occurred
      */
     public void establishConnection() throws SQLException {
         String path = System.getProperty("user.dir") + "/dict/dictionary.pass";
@@ -50,8 +43,10 @@ public class DictionaryDAOFactory {
         String url = "jdbc:sqlite:" + path;
         dataSource = new SQLiteConnectionPoolDataSource();
         dataSource.setUrl(url);
-        // jeśli to jest nowa baza danych
+        // if it's a new database
         if(isNewDatabase) {
+            System.out.println("Dictionary initialization in progress...");
+            System.out.println("Wait for the process to finish for the server to be available");
             String query = """
                             CREATE TABLE dictionary (
                                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -64,18 +59,21 @@ public class DictionaryDAOFactory {
             }
 
             fillDatabase();
+            createIndex();
+            System.out.println("Dictionary initialization finished");
         }
-        createIndex();
-
     }
 
+    /**
+     * Fills dictionary database with data from dictionary.txt
+     * @throws SQLException if SQLite database error occurred
+     */
     private void fillDatabase() throws SQLException {
         try (BufferedReader reader = new BufferedReader(new FileReader(
                 System.getProperty("user.dir") + "/dictionary.txt"))) {
-            System.out.println("Dictionary initialization: start");
             String line;
             while ((line = reader.readLine()) != null) {
-                // Przetwarzanie każdej linii
+                // processing of each line
                 String query = """
                 INSERT INTO dictionary ("password")
                 VALUES (?);
@@ -88,11 +86,14 @@ public class DictionaryDAOFactory {
                 }
             }
         } catch (IOException e) {
-            System.err.println("Wystąpił błąd podczas czytania pliku: " + e.getMessage());
+            System.err.println("Dictionary initialization error: " + e.getMessage());
         }
-        System.out.println("Dicitonary initialization: finish");
     }
 
+    /**
+     * Creates index on password field in the dictionary database
+     * @throws SQLException if SQLite database error occurred
+     */
     private void createIndex() throws SQLException{
         String query = """
                 CREATE INDEX passwdIdx ON dictionary("password")
@@ -104,6 +105,13 @@ public class DictionaryDAOFactory {
         }
     }
 
+    /**
+     * Checks if password is in the database (dictionary attack check)
+     * @param passwd password to be checked
+     * @return  false if password not in the database (dict test passed)
+     *          true if password is in the database (dict test failed)
+     * @throws SQLException if SQLite database error occurred
+     */
     public boolean passwordInDB(String passwd) throws SQLException{
         String query = """
                 SELECT id FROM dictionary WHERE password = ?
@@ -123,9 +131,9 @@ public class DictionaryDAOFactory {
 
 
     /**
-     * Zwraca uchwyt do bazy danych
-     * @return uchwyt do bazy danych
-     * @throws SQLException jeśli wystąpił błąd związany z bazą danych
+     * Gets database connection
+     * @return database connection
+     * @throws SQLException if SQLite database error occurred
      */
     public Connection getConnection() throws SQLException {
         return dataSource.getConnection();
