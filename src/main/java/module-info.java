@@ -5,6 +5,7 @@ module com.example.psswd {
     requires com.fasterxml.jackson.dataformat.xml;
     requires com.fasterxml.jackson.databind;
     requires org.xerial.sqlitejdbc;
+    requires com.opencsv;
     exports com.example.psswd.Server;
 
 

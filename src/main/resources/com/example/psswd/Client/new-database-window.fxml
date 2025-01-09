@@ -70,7 +70,10 @@
                   <ProgressBar fx:id="progressBar" prefWidth="380.0" prefHeight="10.0" progress="0.0" style="-fx-accent: #FF0000;" />
                </children>
             </VBox>
-            <HBox alignment="BOTTOM_RIGHT" prefHeight="24.0" prefWidth="407.0" style="-fx-spacing: 20;">
+            <HBox alignment="BOTTOM_RIGHT" prefHeight="24.0" prefWidth="407.0" style="-fx-spacing: 10;">
+               <HBox alignment="BOTTOM_LEFT" prefHeight="25.0" prefWidth="220.0" style="-fx-spacing: 10;">
+                  <Button contentDisplay="CENTER" defaultButton="false" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#onDictClick" prefHeight="25.0" prefWidth="140.0" text="Dict. attack check" textAlignment="CENTER" />
+               </HBox>
                <Button cancelButton="true" contentDisplay="CENTER" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#onCancelClick" text="Cancel" textAlignment="CENTER" />
                <Button contentDisplay="CENTER" defaultButton="true" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#onCreateClick" text="Create" textAlignment="CENTER" />
             </HBox>
@@ -101,7 +104,7 @@
                   </children>
                </HBox>
             </VBox>
-            <HBox alignment="BOTTOM_RIGHT" prefHeight="24.0" prefWidth="400.0" style="-fx-spacing: 20;">
+            <HBox alignment="BOTTOM_RIGHT" prefHeight="24.0" prefWidth="400.0" style="-fx-spacing: 10;">
                <Button contentDisplay="CENTER" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#onUseClick" prefHeight="25.0" prefWidth="140.0" text="Use this password" textAlignment="CENTER" />
                <Button contentDisplay="CENTER" defaultButton="true" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#onGenerateClick" prefHeight="25.0" prefWidth="140.0" text="Generate password" textAlignment="CENTER" />
             </HBox>

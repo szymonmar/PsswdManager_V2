@@ -5,6 +5,7 @@ import com.example.psswd.LoginCredentials;
 import com.example.psswd.Request;
 import com.example.psswd.Server.crypto.CryptoController;
 import com.example.psswd.Server.dao.sqlite.SqliteDataSourceDAOFactory;
+import com.example.psswd.Server.dictTester.DictionaryDAOFactory;
 import com.example.psswd.Server.model.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -60,8 +61,6 @@ public class ServerThread extends Thread {
                             passwords = FXCollections.observableArrayList(sqliteDataSourceDAOFactory.getPasswordsDao().getPasswords());
                             objectOutput.writeObject(CryptoController.decryptPasswordsArray(
                                     Converters.convertToStrings(passwords)));
-                        } else {
-                            objectOutput.writeObject(new Request("Failed to log in"));
                         }
                         break;
                     case ("newuser"):
@@ -70,32 +69,24 @@ public class ServerThread extends Thread {
                             passwords = FXCollections.observableArrayList(sqliteDataSourceDAOFactory.getPasswordsDao().getPasswords());
                             objectOutput.writeObject(CryptoController.decryptPasswordsArray(
                                     Converters.convertToStrings(passwords)));
-                        } else {
-                            objectOutput.writeObject(new Request("Failed to create account"));
                         }
                         break;
                     case("edit"):
                         if(loggedIn){
                             CommPsswd password = (CommPsswd) objectInput.readObject();
                             editPassword(password);
-                        } else {
-                            objectOutput.writeObject(new Request("Failed to edit password data"));
                         }
                         break;
                     case("add"):
                         if(loggedIn){
                             CommPsswd password = (CommPsswd) objectInput.readObject();
                             addPassword(password);
-                        } else {
-                            objectOutput.writeObject(new Request("Failed to add password"));
                         }
                         break;
                     case("delete"):
                         if(loggedIn) {
                             CommPsswd password = (CommPsswd) objectInput.readObject();
                             deletePassword(password);
-                        } else {
-                            objectOutput.writeObject(new Request("Failed to delete password"));
                         }
                         break;
                     case("logout"):
@@ -113,25 +104,23 @@ public class ServerThread extends Thread {
                                     throw new RuntimeException(e);
                                 }
                             }
-                        } else {
-                            objectOutput.writeObject(new Request("Failed to log out"));
                         }
                         break;
                     case("update"):
                         if(loggedIn) {
                             passwords = FXCollections.observableArrayList(sqliteDataSourceDAOFactory.getPasswordsDao().getPasswords());
                             objectOutput.writeObject(CryptoController.decryptPasswordsArray(
-                                    Converters.convertToStrings(passwords)));
-                        } else {
-                            objectOutput.writeObject(new Request("Failed to update password list"));
-                        }
+                                    Converters.convertToStrings(passwords)));                        }
                         break;
-                        // todo does not work
                     case("editAcc"):
                         if(loggedIn) {
                             LoginCredentials logCreds = (LoginCredentials) objectInput.readObject();
-                            boolean isValidPassword = checkPassword(logCreds);
-                            if (isValidPassword) {
+                            CryptoController cryptoController = CryptoController.getInstance();
+                            if(checkPassword(logCreds)) {
+                                ObservableList<Password> psswds = FXCollections.observableArrayList(
+                                        sqliteDataSourceDAOFactory.getPasswordsDao().getPasswords());
+                                ArrayList<CommPsswd> dcPsswds = CryptoController.decryptPasswordsArray(
+                                        Converters.convertToStrings(psswds));
                                 Info info;
                                 try {
                                     // pobiera informacje z kontraktu o bazie danych
@@ -139,44 +128,78 @@ public class ServerThread extends Thread {
                                 } catch (Exception exception) {
                                     exception.printStackTrace();
                                     try {
+                                        objectOutput.writeObject(new Request("Failed to check password"));
+                                    } catch (IOException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                    break;
+                                }
+                                try {
+                                    cryptoController.initializeKey(logCreds.getNoweHaslo()); // Tworzymy klucz na podstawie hasła
+                                    info.setChallenge(cryptoController.encrypt(loginCredentials.getLogin())); // Szyfrujemy nazwę bazy danych, aby stworzych "challenge" i zapisujemy do obiektu z informacjami o bazie
+                                    info.setSalt(cryptoController.getSalt()); //Tworzymy i zapisujemy salt do obiektu z informacjami o bazie
+                                    sqliteDataSourceDAOFactory.getInfoDao().deleteInfo();
+                                    sqliteDataSourceDAOFactory.getInfoDao().insertInfo(info); // Zapisujemy informacje do kontraktu
+                                } catch (Exception exception) {
+                                    System.out.println("Failed to initialize key from password");
+                                    try {
                                         objectOutput.writeObject(new Request("Failed to change password"));
                                     } catch (IOException e) {
                                         throw new RuntimeException(e);
                                     }
                                     break;
                                 }
-                                CryptoController cryptoController = CryptoController.getInstance();
-                                try {
-                                    cryptoController.initializeKey(logCreds.getNoweHaslo()); // Tworzymy klucz na podstawie hasła
-                                    info.setSalt(cryptoController.getSalt()); //Tworzymy i zapisujemy salt do obiektu z informacjami o bazie
+                                for (CommPsswd passwd : dcPsswds) {
+                                    sqliteDataSourceDAOFactory.getPasswordsDao().deletePassword(passwd.getId());
+                                    Password password = new Password();
+                                    password.setName(passwd.getName());
+                                    password.setUrl(passwd.getUrl());
 
-                                    sqliteDataSourceDAOFactory.getInfoDao().insertInfo(info); // Zapisujemy informacje do kontraktu
-                                } catch (Exception exception) {
-                                    System.out.println("Failed to initialize key from password");
                                     try {
-                                        objectOutput.writeObject(new Request("Failed to create a database"));
+                                        // Próba zakodowania hasła i zapisania go w obiekcie password
+                                        password.setPassword(cryptoController.encrypt(passwd.getPassword()));
+                                    } catch (Exception exception) {
+                                        // Wyświetlenie błędu w razie niepowodzenia
+                                        System.out.println("Failed to encrypt");
+                                        try {
+                                            objectOutput.writeObject(new Request("Failed to change password"));
+                                        } catch (IOException e) {
+                                            throw new RuntimeException(e);
+                                        }
+                                        break;
+                                    }
+                                    try {
+                                        // Próba stworzenia DAO w celu dodania wpisu do bazy danych
+                                        sqliteDataSourceDAOFactory.getPasswordsDao().insertPassword(password);
+                                    } catch (Exception exception) {
+                                        // Wyświetlenie błędu w razie niepowodzenia
+                                        System.out.println("Failed to add password to database");
+                                        try {
+                                            objectOutput.writeObject(new Request("Failed to change password"));
+                                        } catch (IOException e) {
+                                            throw new RuntimeException(e);
+                                        }
+                                        break;
+                                    }
+                                    try {
+                                        objectOutput.writeObject(new Request("success"));
                                     } catch (IOException e) {
                                         throw new RuntimeException(e);
                                     }
-                                    break;
                                 }
-                            }
-                            else {
-                                objectOutput.writeObject(new Request("Failed to update password list"));
                             }
                         }
                         break;
                     case("deleteAcc"):
                         if(loggedIn) {
                             LoginCredentials logCreds = (LoginCredentials) objectInput.readObject();
-                            boolean isValidPassword = checkPassword(logCreds);
-                            if(isValidPassword) {
+                            CryptoController cryptoController = CryptoController.getInstance();
+                            if(checkPassword(logCreds)) {
                                 try {
                                     loggedIn = false;
-                                    CryptoController cryptoController = CryptoController.getInstance();
                                     String dbName = cryptoController.getDatabaseName();
                                     Files.delete(Paths.get("databases/" + dbName +".pass"));
-                                    System.out.println("Plik z bazą danych został pomyślnie usunięty.");
+                                    System.out.println("Plik został pomyślnie usunięty.");
                                     objectOutput.writeObject(new Request("success"));
                                     System.out.println("Logged out");
                                 } catch (Exception exception) {
@@ -187,30 +210,32 @@ public class ServerThread extends Thread {
                                         throw new RuntimeException(e);
                                     }
                                 }
-                            } else {
-                                objectOutput.writeObject(new Request("Failed to update password list"));
                             }
                         }
-                        else {
-                            objectOutput.writeObject(new Request("Failed to update password list"));
+                        break;
+                    case("dictionary"):
+                        CommPsswd commPsswd = (CommPsswd) objectInput.readObject();
+                        String passwd = commPsswd.getPassword();
+                        DictionaryDAOFactory dictionaryDAOFactory = DictionaryDAOFactory.getInstance();
+                        boolean inDb = dictionaryDAOFactory.passwordInDB(passwd);
+                        if (inDb) {
+                            try {
+                                objectOutput.writeObject(new Request("fail"));
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        } else {
+                            try {
+                                objectOutput.writeObject(new Request("success"));
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
                         }
                         break;
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }
-    }
-
-    private void closeConnection(){
-        try {
-            if (socket != null) socket.close();
-            if (input != null) input.close();
-            if (output != null) output.close();
-            if (objectInput != null) objectOutput.close();
-            if (objectOutput != null) objectOutput.close();
-        } catch (IOException e) {
-            System.out.println("Already closed!");
         }
     }
 
@@ -244,6 +269,18 @@ public class ServerThread extends Thread {
             return false;
         }
         return isValidPassword;
+    }
+
+    private void closeConnection(){
+        try {
+            if (socket != null) socket.close();
+            if (input != null) input.close();
+            if (output != null) output.close();
+            if (objectInput != null) objectOutput.close();
+            if (objectOutput != null) objectOutput.close();
+        } catch (IOException e) {
+            System.out.println("Already closed!");
+        }
     }
 
     private boolean openLocalDatabase(LoginCredentials loginCredentials) {
@@ -326,10 +363,8 @@ public class ServerThread extends Thread {
      * Funkcja do tworzenia nowej bazy danych (nowego użytkownika) po kliknięciu "CREATE"
      */
     public boolean createLocalDatabase(LoginCredentials newUserCredentials) {
-
         String dbName = newUserCredentials.getLogin();
         String passwd = newUserCredentials.getHaslo();
-
         if (new File("databases/" + dbName +".pass").exists()) {
             System.out.println("Username already exists");
             try {
@@ -342,8 +377,7 @@ public class ServerThread extends Thread {
 
         // Tworzenie nowego pliku z bazą danych dla użytkownika
         File file = new File("databases/" + dbName + ".pass");
-        System.out.println("Utworzono nowy plik bazy danych");
-
+        System.out.println("Utworzono nowego usera");
 
         SqliteDataSourceDAOFactory sqliteDataSourceDAOFactory = SqliteDataSourceDAOFactory.getInstance();
         try {
@@ -365,7 +399,7 @@ public class ServerThread extends Thread {
         cryptoController.setDatabaseName(dbName);
         try {
             cryptoController.initializeKey(passwd); // Tworzymy klucz na podstawie hasła
-            info.setChallenge(cryptoController.encrypt(dbName)); // Szyfrujemy nazwę bazy danych, aby stworzyc "challenge" i zapisujemy do obiektu z informacjami o bazie
+            info.setChallenge(cryptoController.encrypt(dbName)); // Szyfrujemy nazwę bazy danych, aby stworzych "challenge" i zapisujemy do obiektu z informacjami o bazie
             info.setSalt(cryptoController.getSalt()); //Tworzymy i zapisujemy salt do obiektu z informacjami o bazie
 
             sqliteDataSourceDAOFactory.getInfoDao().insertInfo(info); // Zapisujemy informacje do kontraktu

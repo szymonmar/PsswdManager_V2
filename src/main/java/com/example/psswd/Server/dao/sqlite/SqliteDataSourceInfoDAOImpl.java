@@ -28,7 +28,20 @@ public class SqliteDataSourceInfoDAOImpl implements InfoDao {
         } catch (Exception exception) {
             throw new RuntimeException(exception);
         }
+    }
 
+    public void deleteInfo() {
+        String query = """
+                DELETE FROM info;
+                """;
+        SqliteDataSourceDAOFactory daoFactory = SqliteDataSourceDAOFactory.getInstance();
+        try {
+            Connection conn = daoFactory.getConnection();
+            PreparedStatement ps = conn.prepareStatement(query);
+            System.out.println(ps.executeUpdate());
+        } catch (Exception exception) {
+            throw new RuntimeException(exception);
+        }
     }
 
     public Info getInfo() {

@@ -92,7 +92,6 @@ public class DatabaseSelectorController implements Initializable {
      */
     private void openLocalDatabase(ActionEvent actionEvent) {
 
-
         try {
             // wyświetla okno podania danych do logowania
             showPasswordDialog();
@@ -108,34 +107,6 @@ public class DatabaseSelectorController implements Initializable {
             }
         }
 
-//
-//        LoginCredentials loginCredentials = new LoginCredentials(unlockLogin.get(), unlockPassword.get());
-//        // pobranie instancji połączenia
-//        ConnectionHandler connectionHandlerInstance = ConnectionHandler.getInstance();
-//        // przesłanie request i danych logowania
-//        connectionHandlerInstance.sendObjectToServer(new Request("login"));
-//        connectionHandlerInstance.sendObjectToServer(loginCredentials);
-//
-//        Request reply = (Request) connectionHandlerInstance.readObjectFromServer();
-//
-//        // jeśli zalogowano to otwiera managera
-//        if(reply.getRequest().equals("success")) {
-//            try {
-//                SceneController.setScene(actionEvent, "passwords-view.fxml"); // Otwieramy okno z danymi w bazie danych
-//            } catch (IOException e) {
-//                AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.ERROR);
-//                alertBuilder
-//                        .setTitle("Error")
-//                        .setHeaderText("Fatal error")
-//                        .setException(e);
-//                alertBuilder.getAlert().showAndWait();            }
-//        } else {
-//            AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.ERROR);
-//            alertBuilder
-//                    .setTitle("Error")
-//                    .setHeaderText(reply.getRequest());
-//            alertBuilder.getAlert().showAndWait();
-//            return;
-//        }
+
     }
 }
