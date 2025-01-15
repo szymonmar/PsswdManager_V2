@@ -5,7 +5,7 @@ import com.example.psswd.LoginCredentials;
 import com.example.psswd.Request;
 import com.example.psswd.Server.crypto.CryptoController;
 import com.example.psswd.Server.dao.sqlite.SqliteDataSourceDAOFactory;
-import com.example.psswd.Server.dictTester.DictionaryDAOFactory;
+import com.example.psswd.Server.dictTester.DictionaryDAO;
 import com.example.psswd.Server.model.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -15,7 +15,6 @@ import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 
 public class ServerThread extends Thread {
@@ -216,8 +215,8 @@ public class ServerThread extends Thread {
                     case("dictionary"):
                         CommPsswd commPsswd = (CommPsswd) objectInput.readObject();
                         String passwd = commPsswd.getPassword();
-                        DictionaryDAOFactory dictionaryDAOFactory = DictionaryDAOFactory.getInstance();
-                        boolean inDb = dictionaryDAOFactory.passwordInDB(passwd);
+                        DictionaryDAO dictionaryDAO = DictionaryDAO.getInstance();
+                        boolean inDb = dictionaryDAO.passwordInDB(passwd);
                         if (inDb) {
                             try {
                                 objectOutput.writeObject(new Request("fail"));

@@ -1,10 +1,7 @@
 package com.example.psswd.Client.views;
 
-import com.example.psswd.Client.ConnectionHandler;
 import com.example.psswd.Client.SceneController;
 import com.example.psswd.Client.alert.AlertBuilder;
-import com.example.psswd.LoginCredentials;
-import com.example.psswd.Request;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -21,20 +18,25 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 /**
- * Klasa obsługująca wybór bazy danych z hasłami (konta użytkownika) z GUI
- * Ekran domowy
+ * FXML controller for hello screen
  */
-public class DatabaseSelectorController implements Initializable {
+public class HelloViewController implements Initializable {
 
+    /**
+     * Holds information whether user is logged in or not
+     */
     private boolean loggedIn;
 
+    /**
+     * Runs once when opening the window
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {}
 
 
     /**
-     * Funkcja do otwierania okna tworzenia nowej bazy danych po kliknięciu przycisku "CREATE"
-     * @param actionEvent event wywołujący funkcję (kliknięcie CREATE) [ActionEvent]
+     * Opens "Create new user" view
+     * @param actionEvent event that triggers the function
      */
     @FXML
     private void onCreateDatabaseClick(ActionEvent actionEvent) {
@@ -45,10 +47,9 @@ public class DatabaseSelectorController implements Initializable {
         }
     }
 
-
     /**
-     * Funkcja do otwierania bazy danych  po kliknięciu przycisku "OPEN DATABASE"
-     * @param actionEvent event wywołujący funkcję (kliknięcie OPEN DATABASE) [ActionEvent]
+     * Handles "Log in" click
+     * @param actionEvent event that triggers the function
      */
     public void onOpenDatabaseClick(ActionEvent actionEvent) {
         // Sprawdza która z zapamiętanych baz jest zaznaczona
@@ -58,8 +59,7 @@ public class DatabaseSelectorController implements Initializable {
             AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.ERROR);
             alertBuilder
                     .setTitle("Error")
-                    .setHeaderText("Fatal error")
-                    .setException(exception);
+                    .setHeaderText("Fatal error");
             alertBuilder.getAlert().showAndWait();
         }
     }
@@ -68,7 +68,8 @@ public class DatabaseSelectorController implements Initializable {
     private SimpleStringProperty unlockLogin = new SimpleStringProperty();
 
     /**
-     * Funkcja do wyświetlania okna podania hasła do bazy danych
+     * Handles opening 'log in' dialog and attaching the controller to it
+     * @throws IOException when cannot open the fxml file
      */
     private void showPasswordDialog() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(SceneController.class.getResource("unlock-database-dialog.fxml"));
@@ -81,14 +82,15 @@ public class DatabaseSelectorController implements Initializable {
         stage.setTitle("Log in");
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setScene(scene);
+        stage.setResizable(false);
         stage.showAndWait();
 
         loggedIn = unlockDatabaseController.isLoggedIn();
     }
 
     /**
-     * Funkcja otiwerająca okno logowania
-     * @param actionEvent event wywołujący funkcję (kliknięcie OPEN DATABASE) [ActionEvent]
+     * Opens "Log in" dialog if logged out
+     * @param actionEvent event that triggers the function
      */
     private void openLocalDatabase(ActionEvent actionEvent) {
 

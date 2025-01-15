@@ -8,10 +8,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 /**
- * Klasa implementująca InfoDao, obsługująca dostęp do bazy danych (do tabeli zawierającej informacje o bazie danych potrzebne do odszyfrowania)
+ * Template for data access objects for info table
  */
 public class SqliteDataSourceInfoDAOImpl implements InfoDao {
 
+    @Override
     public void insertInfo(Info info) {
         String query = """
                 INSERT INTO info ("name", "challenge", "salt")
@@ -30,6 +31,7 @@ public class SqliteDataSourceInfoDAOImpl implements InfoDao {
         }
     }
 
+    @Override
     public void deleteInfo() {
         String query = """
                 DELETE FROM info;
@@ -44,6 +46,7 @@ public class SqliteDataSourceInfoDAOImpl implements InfoDao {
         }
     }
 
+    @Override
     public Info getInfo() {
         String query = """
                 SELECT * FROM info LIMIT 1;

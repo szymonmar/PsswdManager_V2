@@ -9,19 +9,18 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 /**
- * Klasa reprezentująca alert wyświetlany w programie
+ * Class representing alert shown in the password manager
  */
 final public class AlertBuilder implements Alert {
 
     /**
-     * Obiekt typu javafx.scene.control.Alert przechowujący dane alertu do wyświetlenia
-     * Potrzebny do javafx-controls
+     * JavaFX alert
      */
     private final javafx.scene.control.Alert alert;
 
     /**
-     * Konstruktor AlertBuildera
-     * @param alertType Typ alertu do wyświetlenia [javafx.scene.control.Alert.AlertType]
+     * Creates new alert
+     * @param alertType alert type (INFORMATION / WARNING / ERROR / CONFIRMATION)
      */
     public AlertBuilder(javafx.scene.control.Alert.AlertType alertType) {
         alert = new javafx.scene.control.Alert(alertType);
@@ -39,35 +38,9 @@ final public class AlertBuilder implements Alert {
         return this;
     }
 
-    @Override
-    public Alert setException(Exception exception) {
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw);
-        exception.printStackTrace(pw);
-        String exceptionText = sw.toString();
-
-        Label label = new Label("Exception stacktrace:");
-        TextArea textArea = new TextArea(exceptionText);
-        textArea.setEditable(false);
-        textArea.setWrapText(true);
-        textArea.setMaxWidth(Double.MAX_VALUE);
-        textArea.setMaxHeight(Double.MAX_VALUE);
-        GridPane.setVgrow(textArea, Priority.ALWAYS);
-        GridPane.setHgrow(textArea, Priority.ALWAYS);
-
-        GridPane expContent = new GridPane();
-        expContent.setMaxWidth(Double.MAX_VALUE);
-        expContent.add(label, 0, 0);
-        expContent.add(textArea, 0, 1);
-
-        alert.getDialogPane().setExpandableContent(expContent);
-        return this;
-    }
-
     /**
-     * Metoda wywoływana przez kontrolery GUI po to, aby wyświetlić błąd
-     * w oknie alertu
-     * @return Obiekt typu javafx.scene.control.Alert do wyświetlenia
+     * Returns alert to be shown in the front-end (use this method in the controller)
+     * @return Alert
      */
     public javafx.scene.control.Alert getAlert() {
         return alert;

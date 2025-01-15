@@ -25,14 +25,27 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * FXML Controller for CSV import / export dialog
+ */
 public class CSVController {
 
+    /**
+     * Text field for path to the CSV file to import
+     */
     @FXML
     public TextField importFilePathField;
 
+    /**
+     * Text field for the path to the directory for CSV export
+     */
     @FXML
     public TextField exportFilePathField;
 
+    /**
+     * Reads data from CSV file and imports them to the database
+     * @param actionEvent event that triggers the function
+     */
     @FXML
     public void onImportClick(ActionEvent actionEvent) {
         String csvFile = importFilePathField.getText();
@@ -95,6 +108,10 @@ public class CSVController {
         }
     }
 
+    /**
+     * Exports all passwords to the csv file
+     * @param actionEvent event that triggers the function
+     */
     @FXML
     public void onExportClick(ActionEvent actionEvent) {
         String csvFile = exportFilePathField.getText() + "/passwdExport.csv";
@@ -126,6 +143,10 @@ public class CSVController {
         }
     }
 
+    /**
+     * Opens directory chooser window for export file directory
+     * @param actionEvent event that triggers the function
+     */
     @FXML
     public void chooseExportFile(ActionEvent actionEvent){
         // Tworzymy okno wyboru folderu
@@ -144,6 +165,10 @@ public class CSVController {
         }
     }
 
+    /**
+     * Opens file chooser window to select the CSV file to import
+     * @param actionEvent event that triggers the function
+     */
     @FXML
     public void chooseImportFile(ActionEvent actionEvent){
         FileChooser fileChooser = new FileChooser();
@@ -167,6 +192,10 @@ public class CSVController {
         }
     }
 
+    /**
+     * Closes the window after clicking 'Cancel'
+     * @param actionEvent event triggering the action
+     */
     @FXML
     public void onCancelClick(ActionEvent actionEvent) {
         SceneController.destroyStage(actionEvent);

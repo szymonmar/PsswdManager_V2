@@ -35,68 +35,100 @@ import java.util.Random;
 import java.util.ResourceBundle;
 
 /**
- * Klasa obsługująca edycję konta użytkownika z GUI
+ * FXML controller for 'Edit account' window
  */
 public class EditAccountController {
 
 
     /**
-     * Pole tekstowe do wpisania starego hasła do konta
+     * Text field for old password
      */
     @FXML
     private PasswordField oldPasswordField;
 
     /**
-     * Pole tekstowe do wpisania nowego hasła do konta
+     * Text field for new password
      */
     @FXML
     private PasswordField newPasswordField;
 
 
     /**
-     * Pole tekstowe do ponownego wpisania nowego hasła do konta
+     * Text field for repeating new password
      */
     @FXML
     private PasswordField repNewPasswordField;
 
+    /**
+     * Text field for password in the 'Delete account' section
+     */
     @FXML
     private PasswordField confirmPasswordField;
 
-
     /**
-     * Checkbox potwierdzający, że użytkownik zna konsekwencje usunięcia konta
+     * Checkbox for user to confirm that they understand consequences
+     * of further actions
      */
     @FXML
     private CheckBox understandCheckBox;
 
+    /**
+     * Password strength progress bar
+     */
     @FXML
     private ProgressBar progressBar;
 
+    /**
+     * Password length slider for password generator
+     */
     @FXML
     private Slider slider;
 
+    /**
+     * Label displaying number of characters selected with the slider
+     */
     @FXML
     private Label numOfCharacters;
 
-
+    /**
+     * 'Capital letters' checkbox for generator
+     */
     @FXML
     private CheckBox capitals;
 
+    /**
+     * 'Numbers' checkbox for generator
+     */
     @FXML
     private CheckBox numbers;
 
+    /**
+     * 'Special symbols' checkbox for generator
+     */
     @FXML
     private CheckBox symbols;
 
+    /**
+     * Text field displaying generated password
+     */
     @FXML
     private TextField generatedPassword;
 
+    /**
+     * Holds information whether the account has been deleted in this window
+     */
     private boolean accDeleted = false;
 
+    /**
+     * @return true if account was deleted in the window, false if not
+     */
     public boolean isAccDeleted() {
         return accDeleted;
     }
 
+    /**
+     * Runs once on opening the window
+     */
     @FXML
     public void initialize() {
         // Dodaj listener do textProperty
@@ -111,8 +143,8 @@ public class EditAccountController {
     }
 
     /**
-     * Funkcja do zapisania zmian we wpisie bazy danych po kliknięciu przycisku "SAVE"
-     * @param actionEvent event wywołujący funkcję (kliknięcie SAVE) [ActionEvent]
+     * Sends request to change user password and passes new password to the server
+     * @param actionEvent event that triggers the function
      */
     public void onSaveClick(ActionEvent actionEvent) {
         String pass = newPasswordField.getText();
@@ -160,8 +192,8 @@ public class EditAccountController {
     }
 
     /**
-     * Funkcja obsługująca kliknięcie "Delete Account" po stronie klienta
-     * @param actionEvent event wywołujący funkcję (kliknięcie Delete Account) [ActionEvent]
+     * Handles 'Delete account' on client site and sends request to delete user account
+     * @param actionEvent event that triggers the function
      */
     public void onDeleteClick(ActionEvent actionEvent) {
         if(understandCheckBox.isSelected()) {
@@ -183,8 +215,7 @@ public class EditAccountController {
                     AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.ERROR);
                     alertBuilder
                             .setTitle("Error")
-                            .setHeaderText("Fatal error")
-                            .setException(exception);
+                            .setHeaderText("Fatal error");
                     alertBuilder.getAlert().showAndWait();
                 }
             } else {
@@ -205,7 +236,10 @@ public class EditAccountController {
     }
 
 
-
+    /**
+     * Function triggered by the listener on 'Password' field
+     * @param newValue password in the 'Password' field
+     */
     public void onPasswordFieldChange(String newValue) {
         passwordStrengthBarController(newValue);
     }
@@ -222,6 +256,10 @@ public class EditAccountController {
         generatedPassword.setText(pass);
     }
 
+    /**
+     * Passes generated password to 'Password' and 'Repeat password' fields
+     * @param actionEvent event triggering the action
+     */
     public void onUseClick(ActionEvent actionEvent) {
         String password = generatedPassword.getText();
         if(password.isEmpty()) {
@@ -232,15 +270,18 @@ public class EditAccountController {
     }
 
     /**
-     * Funkcja do zamykania okna dodawania hasła po kliknięciu przycisku "CANCEL"
-     * @param actionEvent event wywołujący funkcję (kliknięcie CANCEL) [ActionEvent]
+     * Closes the window after clicking 'Cancel'
+     * @param actionEvent event triggering the action
      */
     public void onCancelClick(ActionEvent actionEvent) {
         SceneController.destroyStage(actionEvent);
     }
 
 
-
+    /**
+     * Handles dictionary attack check
+     * @param actionEvent event triggering the dictionary attack check
+     */
     public void onDictClick(ActionEvent actionEvent) {
         String pass = newPasswordField.getText();
         if(pass.isEmpty()) {
@@ -285,6 +326,10 @@ public class EditAccountController {
 
     }
 
+    /**
+     * Handles 'Password strength' bar
+     * @param password password in the 'Password' field
+     */
     public void passwordStrengthBarController(String password) {
         double passStrength = 0.0;
         double lengthFactor = 1.0;

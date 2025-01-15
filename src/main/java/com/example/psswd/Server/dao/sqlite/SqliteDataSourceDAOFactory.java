@@ -12,31 +12,26 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 /**
- * Klasa obsługująca tworzenie obiektów dostępu do danych
- * potrzebna do komunikacji z bazą danych
+ * Handles the database connection and creating of data access objects
  */
 public class SqliteDataSourceDAOFactory extends DAOFactory {
 
     /**
-     * Instancja SqliteDataSourceDAOFactory
+     * SqliteDataSourceDAOFactory instance
      */
     private static SqliteDataSourceDAOFactory sqliteDataSourceDAOFactoryInstance;
 
     /**
-     * źródło danych
+     * Data source for database connection
      */
     private static SQLiteConnectionPoolDataSource dataSource;
 
-    /**
-     * Konstruktor obiektów typu SqliteDataSourceDAOFactory
-     */
-    private SqliteDataSourceDAOFactory(){
-
-    }
+    private SqliteDataSourceDAOFactory() {}
 
     /**
-     * Tworzy i zwraca instancję SqliteDataSourceDAOFactory
-     * @return instancja SqliteDataSourceDAOFactory
+     * Creates SqliteDataSourceDAOFactory instance if one does not exist
+     * and returns it
+     * @return SqliteDataSourceDAOFactory instance
      */
     public static SqliteDataSourceDAOFactory getInstance() {
         if (sqliteDataSourceDAOFactoryInstance == null) {
@@ -46,9 +41,9 @@ public class SqliteDataSourceDAOFactory extends DAOFactory {
     }
 
     /**
-     * Funkcja nawiązująca połączenie z bazą danych
-     * @param path ścieżka do bazy danych
-     * @throws SQLException jeśli wystąpił błąd związany z bazą danych
+     * Establishes connection to the database
+     * @param path path to the database file
+     * @throws SQLException if database error occured
      */
     public void establishConnection(String path) throws SQLException {
         boolean isNewDatabase = Files.notExists(Paths.get(path));
@@ -84,25 +79,25 @@ public class SqliteDataSourceDAOFactory extends DAOFactory {
     }
 
     /**
-     * Zwraca kontrakt dostępu do tablicy info w bazie danych
-     * @return kontrakt dostępu do tablicy info w bazie danych
+     * Returns data access object for the info table
+     * @return data access object for the info table
      */
     public InfoDao getInfoDao() {
         return new SqliteDataSourceInfoDAOImpl();
     }
 
     /**
-     * Zwraca kontrakt dostępu do tablicy passwords w bazie danych
-     * @return kontrakt dostępu do tablicy passwords w bazie danych
+     * Returns data access object for the password table
+     * @return Data access object for the password table
      */
     public PasswordsDao getPasswordsDao() {
         return new SqliteDataSourcePasswordsDAOImpl();
     }
 
     /**
-     * Zwraca uchwyt do bazy danych
-     * @return uchwyt do bazy danych
-     * @throws SQLException jeśli wystąpił błąd związany z bazą danych
+     * Returns connection to the database
+     * @return database connection
+     * @throws SQLException if database error occured
      */
     public Connection getConnection() throws SQLException {
         return dataSource.getConnection();

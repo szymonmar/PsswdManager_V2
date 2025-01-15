@@ -19,18 +19,14 @@
             </Text>
             <VBox alignment="BOTTOM_RIGHT" style="-fx-spacing: 10;">
                 <HBox alignment="BOTTOM_LEFT" style="-fx-spacing: 5;">
-                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Choose CSV file to import">
+                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Import">
                         <font>
                             <Font name="System Bold" size="14.0" />
                         </font>
                     </Text>
                 </HBox>
                 <HBox alignment="BOTTOM_LEFT" style="-fx-spacing: 5;">
-                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="File should contain at least three columns titled 'name', 'url', 'password'">
-                        <font>
-                            <Font name="System Bold" size="12.0" />
-                        </font>
-                    </Text>
+                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="File should contain at least three columns titled 'name', 'url', 'password'"/>
                 </HBox>
                 <HBox style="-fx-spacing: 5;">
                     <TextField fx:id="importFilePathField" promptText="Choose file" prefWidth="300"/>
@@ -41,7 +37,7 @@
             <Separator />
             <VBox alignment="BOTTOM_RIGHT" style="-fx-spacing: 10;">
                 <HBox alignment="BOTTOM_LEFT" style="-fx-spacing: 5;">
-                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Choose location for the CSV file to export to">
+                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Export">
                         <font>
                             <Font name="System Bold" size="14.0" />
                         </font>

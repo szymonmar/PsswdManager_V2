@@ -12,25 +12,23 @@ import java.io.IOException;
 public class Main extends Application {
 
     /**
-     * Funkcja wykonująca start programu
+     * Starts the JavaFX application
      * @param stage
-     * @throws IOException jeśli wystąpi błąd strumienia wejścia / wyjścia
+     * @throws IOException if problem occurs while opening fxml file
      */
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("database-selector-view.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("hello-view.fxml"));
         Parent root = loader.load();
         Scene scene = new Scene(root, 800, 400);
         stage.setTitle("Passwd Manager");
         stage.setScene(scene);
+        stage.setResizable(false);
         stage.show();
-        ConnectionHandler connectionHandlerInstance = ConnectionHandler.getInstance();
-        connectionHandlerInstance.establishConnection();
     }
 
     /**
-    * Główna funkcja programu
-    * Wywołuje metodę launch(), która rozpoczyna cykl życia aplikacji JavaFX
+    * Main program input
     */
     public static void main(String[] args) {
         launch();

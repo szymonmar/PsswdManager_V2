@@ -3,20 +3,20 @@ package com.example.psswd.Server.dao;
 import com.example.psswd.Server.dao.sqlite.SqliteDataSourceDAOFactory;
 
 /**
- * Klasa abstarkcyjna reprezentująca fabrykę obiektów dostępu do danych
+ * Represents factory of data access objects
  */
 public abstract class DAOFactory {
 
     /**
-     * Funkcja zwracająca obiekt umożliwiający dostęp do tabeli z informacjami o bazie danych
-     * (z informacjami potrzebnymi do rozszyfrowania)
-     * @return obiekt dostępu do danych
+     * Returns Info table data access object
+     * (used for encryption / decryption and checking user password)
+     * @return data access object for Info
      */
     public abstract InfoDao getInfoDao();
 
     /**
-     * Zwraca instancję SqliteDataSourceDAOFactory
-     * @return instancja SqliteDataSourceDAOFactory
+     * Returns SqliteDataSourceDAOFactory instance
+     * @return instance of SqliteDataSourceDAOFactory
      */
     public static DAOFactory getDAOFactory() {
         return SqliteDataSourceDAOFactory.getInstance();

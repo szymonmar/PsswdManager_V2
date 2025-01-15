@@ -6,12 +6,13 @@ import javafx.collections.ObservableList;
 
 import java.util.ArrayList;
 
-/** klasa przechowuje konwertery używane do konwersji observable na serializable i vice versa */
+/** Class grouping converters used in the program */
 public class Converters {
 
-    /** konwertuje listę observable [Password] na listę przystosowaną do komunikacji
-     * @param passwords observable list do konwersji [Password]
-     * @return lista do komunikacji [CommPsswd]
+    /** Converts observable list of Password objects to serializable list of CommPsswd objects
+     * (use before sending list to the server)
+     * @param passwords ObservableList of passwords
+     * @return ArrayList of CommPsswds
      */
     public static ArrayList<CommPsswd> convertToStrings(ObservableList<Password> passwords) {
         ArrayList<CommPsswd> commPsswds = new ArrayList<>();
@@ -26,9 +27,9 @@ public class Converters {
         return commPsswds;
     }
 
-    /** konwertuje pojedynczy rekord Password na CommPsswd
-     * @param password Password do konwersji
-     * @return CommPsswd
+    /** Converts single Password object to CommPsswd
+     * @param password Password for conversion
+     * @return CommPsswd object
      */
     public static CommPsswd convertToString(Password password) {
         CommPsswd commPsswd = new CommPsswd();
@@ -39,10 +40,9 @@ public class Converters {
         return commPsswd;
     }
 
-    /**
-     * konwertuje pojedynczy rekord CommPsswd na Password
-     * @param commPsswd CommPsswd do konwersji
-     * @return Password
+    /** Converts single CommPsswd object to Password
+     * @param commPsswd CommPsswd for conversion
+     * @return Password object
      */
     public static Password convertToPassword(CommPsswd commPsswd) {
         Password password = new Password();
@@ -53,9 +53,10 @@ public class Converters {
         return password;
     }
 
-    /** konwertuje listę seralizowalną [CommPsswd] na listę observable
-     * @param commPsswdArrayList - lista przygotowana do komunikacji
-     * @return - lista observable do wyświetlania
+    /** Converts serializable list of CommPsswd objects into observable list of Password objects
+     * (use after receiving list from server, before displaying)
+     * @param commPsswdArrayList ArrayList of CommPsswds
+     * @return ObservableList of Passwords
      */
     public static ObservableList<Password> convertToObservable(ArrayList<CommPsswd> commPsswdArrayList) {
         ObservableList<Password> passwords = FXCollections.observableArrayList();

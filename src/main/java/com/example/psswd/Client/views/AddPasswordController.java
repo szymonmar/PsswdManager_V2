@@ -8,71 +8,85 @@ import com.example.psswd.CommPsswd;
 import com.example.psswd.Request;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.text.Text;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-
-import java.io.IOException;
-import java.sql.SQLOutput;
-import java.util.Random;
 
 
 /**
- * Klasa obsługująca dodawanie hasła do konkretnej bazy danych z GUI
+ * FXML Controller for add password window
  */
 public class AddPasswordController {
 
     /**
-     * Pole tekstowy nazwy, pod którą chcemy zapisać hasło, np. Facebook
+     * Name text field
      */
     @FXML
     private TextField nameField;
 
     /**
-     * Pole tekstowe linku, który będzie korespondował z zapisanym hasłem, np. facebook.com
+     * URL text field
      */
     @FXML
     private TextField urlField;
 
     /**
-     * Pole tekstowe do wpisania hasła
+     * Password text field
      */
     @FXML
     private PasswordField passwordField;
 
+    /**
+     * Password strength progress bar
+     */
     @FXML
     private ProgressBar progressBar;
 
+    /**
+     * Password length slider for password generator
+     */
     @FXML
     private Slider slider;
 
+    /**
+     * Label displaying number of characters selected with the slider
+     */
     @FXML
     private Label numOfCharacters;
 
+    /**
+     * 'Capital letters' checkbox for generator
+     */
     @FXML
     private CheckBox capitals;
 
+    /**
+     * 'Numbers' checkbox for generator
+     */
     @FXML
     private CheckBox numbers;
 
+    /**
+     * 'Special symbols' checkbox for generator
+     */
     @FXML
     private CheckBox symbols;
 
+    /**
+     * Text field displaying generated password
+     */
     @FXML
     private TextField generatedPassword;
 
+    /**
+     * Runs once on opening the window
+     */
     @FXML
     public void initialize() {
-        // Dodaj listener do passwordField
+        // Adding listener to the password field
         passwordField.textProperty().addListener((observable, oldValue, newValue) -> {
             onPasswordFieldChange(newValue);
         });
 
-        // Dodaj listener do slidera
+        // Adding listener to the slider
         slider.valueProperty().addListener((observable, oldValue, newValue) -> {
             numOfCharacters.setText(String.valueOf(newValue.intValue()));
         });
@@ -80,16 +94,16 @@ public class AddPasswordController {
 
 
     /**
-     * Funkcja do zamykania okna dodawania hasła po kliknięciu przycisku "CANCEL"
-     * @param actionEvent event wywołujący funkcję (kliknięcie CANCEL) [ActionEvent]
+     * Closes the window after clicking 'Cancel'
+     * @param actionEvent event triggering the action
      */
     public void onCancelClick(ActionEvent actionEvent) {
         SceneController.destroyStage(actionEvent);
     }
 
     /**
-     * Funkcja do dodawania wpisu do bazy danych po kliknięciu przycisku "ADD"
-     * @param actionEvent event wywołujący funkcję (kliknięcie ADD) [ActionEvent]
+     * Handles adding password to the manager
+     * @param actionEvent event triggering the action
      */
     public void onAddClick(ActionEvent actionEvent) {
         String name = nameField.getText();
@@ -142,11 +156,18 @@ public class AddPasswordController {
         SceneController.destroyStage(actionEvent);
     }
 
-
+    /**
+     * Function triggered by the listener on 'Password' field
+     * @param newValue password in the 'Password' field
+     */
     public void onPasswordFieldChange(String newValue) {
         passwordStrengthBarController(newValue);
     }
 
+    /**
+     * Runs password generator algorithm after clicking 'Generate password'
+     * @param actionEvent event triggering the action
+     */
     public void onGenerateClick(ActionEvent actionEvent) {
         boolean hasCapitals = capitals.isSelected();
         boolean hasNumbers = numbers.isSelected();
@@ -159,6 +180,10 @@ public class AddPasswordController {
         generatedPassword.setText(pass);
     }
 
+    /**
+     * Passes generated password to 'Password' and 'Repeat password' fields
+     * @param actionEvent event triggering the action
+     */
     public void onUseClick(ActionEvent actionEvent) {
         String password = generatedPassword.getText();
         if(password.isEmpty()) {
@@ -167,7 +192,10 @@ public class AddPasswordController {
         passwordField.setText(password);
     }
 
-
+    /**
+     * Handles dictionary attack check
+     * @param actionEvent event triggering the dictionary attack check
+     */
     public void onDictClick(ActionEvent actionEvent) {
         String pass = passwordField.getText();
         if(pass.isEmpty()) {
@@ -210,6 +238,10 @@ public class AddPasswordController {
         }
     }
 
+    /**
+     * Handles 'Password strength' bar
+     * @param password password in the 'Password' field
+     */
     public void passwordStrengthBarController(String password) {
         double passStrength = 0.0;
         double lengthFactor = 1.0;

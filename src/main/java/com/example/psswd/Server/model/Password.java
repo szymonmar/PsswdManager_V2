@@ -4,89 +4,85 @@ import javafx.beans.property.SimpleStringProperty;
 
 
 /**
- * Klasa do reprezentowania wpisu w managerze haseł
+ * Class representing single password in the manager
  */
 public class Password {
 
     /**
-     * Przechowuje ID wpisu w managerze haseł
+     * ID of a single password entity in the manager
      */
     private Integer id;
 
     /**
-     * Przechowuje nazwę wpisu w managerze haseł, np. Facebook
+     * Name of a single password entity in the manager (e.g. Facebook)
      */
     private final SimpleStringProperty name = new SimpleStringProperty();
 
     /**
-     * Przechowuje URL w danym wpisie w managerze haseł, np. facebook.com
+     * URL of a single password entity in the manager (e.g. facebook.com)
      */
     private final SimpleStringProperty url = new SimpleStringProperty();
 
     /**
-     * Przechowuje hasło w danym wpisie w managerze haseł
+     * Encrypted password of a single password entity in the manager
      */
     private byte[] password;
 
 
     /**
-     * Zwraca ID wpisu w managerze
-     * @return ID wpisu [Integer]
+     * @return password entity ID [Integer]
      */
     public Integer getId() {
         return id;
     }
 
     /**
-     * Służy do ustawienia ID wpisu w managerze
-     * @param id ID do ustawienia [Integer]
+     * Sets ID of a password entity
+     * @param id [Integer]
      */
     public void setId(Integer id) {
         this.id = id;
     }
 
     /**
-     * Zwraca nazwę wpisu w managerze
-     * @return Nazwa wpisu [String]
+     * @return name of a password entity [String]
      */
     public String getName() {
         return name.get();
     }
 
     /**
-     * Służy do ustawienia nazwy wpisu w managerze
-     * @param name Żądana nazwa wpisu [String]
+     * Sets name of a password entity
+     * @param name [String]
      */
     public void setName(String name) {
         this.name.set(name);
     }
 
     /**
-     * Zwraca URL wpisu w managerze
-     * @return URL wpisu [String]
+     * @return URL of a password entity [String]
      */
     public String getUrl() {
         return url.get();
     }
 
     /**
-     * Służy do ustawienia URL wpisu w managerze
-     * @param url Żądany URL [String]
+     * Sets URL of a password entity
+     * @param url [String]
      */
     public void setUrl(String url) {
         this.url.set(url);
     }
 
     /**
-     * Zwraca hasło z danego wpisu w managerze
-     * @return Hasło [ byte[] ]
+     * @return encrypted password [ byte[] ]
      */
     public byte[] getPassword() {
         return password;
     }
 
     /**
-     * Służy do ustawienia hasła w danym wpisie w managerze
+     * Sets encrypted password
      * @param password Żądane hasło [ byte[] ]
      */
     public void setPassword(byte[] password) {

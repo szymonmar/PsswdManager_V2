@@ -21,49 +21,74 @@ import java.util.Random;
 
 
 /**
- * Klasa obsługująca dodanie nowej bazy danych (nowy użytkownik) z GUI
+ * FXML controller for 'Create new user' screen
  */
 public class NewDatabaseController {
 
     /**
-     * Pole tekstowe nazwy bazy danych (nazwa użytkownika)
+     * Text field for database name (username)
      */
     @FXML
     private TextField dbNameField;
 
     /**
-     * Pole tekstowe hasła do bazy danych (hasła użytkownika)
+     * Text field for password
      */
     @FXML
     private PasswordField passwordField;
 
     /**
-     * Pole tekstowe ponownego podania hasła
+     * Text field for repeat password
      */
     @FXML
     private PasswordField passwordRepeatField;
 
+    /**
+     * Password strength progress bar
+     */
     @FXML
     private ProgressBar progressBar;
 
+    /**
+     * Password length slider for password generator
+     */
     @FXML
     private Slider slider;
 
+    /**
+     * Label displaying number of characters selected with the slider
+     */
     @FXML
     private Label numOfCharacters;
 
+    /**
+     * 'Capital letters' checkbox for generator
+     */
     @FXML
     private CheckBox capitals;
 
+    /**
+     * 'Numbers' checkbox for generator
+     */
     @FXML
     private CheckBox numbers;
 
+    /**
+     * 'Special symbols' checkbox for generator
+     */
     @FXML
     private CheckBox symbols;
 
+    /**
+     * Text field displaying generated password
+     */
     @FXML
     private TextField generatedPassword;
 
+
+    /**
+    * Runs once on opening the window
+    */
     @FXML
     public void initialize() {
         // Dodaj listener do passwordField
@@ -78,20 +103,20 @@ public class NewDatabaseController {
     }
 
     /**
-     * Funkcja do przełączania okna z tworzenia użytkownika na wybór już istniejącego po naciśnięciu "CANCEL"
-     * @param actionEvent event wywołujący funkcję (kliknięcie CANCEL) [ActionEvent]
+     * Closes the window after clicking 'Cancel'
+     * @param actionEvent event triggering the action
      */
     public void onCancelClick(ActionEvent actionEvent) {
         try {
-            SceneController.setScene(actionEvent, "database-selector-view.fxml");
+            SceneController.setScene(actionEvent, "hello-view.fxml");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     /**
-     * Funkcja do tworzenia nowej bazy danych (nowego użytkownika) po kliknięciu "CREATE"
-     * @param actionEvent event wywołujący funkcję (kliknięcie CREATE) [ActionEvent]
+     * Sends new user request to the server and passes login data for the new user
+     * @param actionEvent event triggering the action
      */
     public void onCreateClick(ActionEvent actionEvent) {
         String dbName = dbNameField.getText();
@@ -128,6 +153,7 @@ public class NewDatabaseController {
         // pobranie instancji połączenia, przesłanie request i danych logowania
         LoginCredentials loginCredentials = new LoginCredentials(dbName, passwd);
         ConnectionHandler connectionHandlerInstance = ConnectionHandler.getInstance();
+        connectionHandlerInstance.establishConnection();
         connectionHandlerInstance.sendObjectToServer(new Request("newuser"));
         connectionHandlerInstance.sendObjectToServer(loginCredentials);
         Request reply = (Request) connectionHandlerInstance.readObjectFromServer();
@@ -139,8 +165,7 @@ public class NewDatabaseController {
                 AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.ERROR);
                 alertBuilder
                         .setTitle("Error")
-                        .setHeaderText("Fatal error.")
-                        .setException(exception);
+                        .setHeaderText("Fatal error.");
                 alertBuilder.getAlert().showAndWait();
             }
         } else {
@@ -152,10 +177,18 @@ public class NewDatabaseController {
         }
     }
 
+    /**
+     * Function triggered by the listener on 'Password' field
+     * @param newValue password in the 'Password' field
+     */
     public void onPasswordFieldChange(String newValue) {
         passwordStrengthBarController(newValue);
     }
 
+    /**
+     * Runs password generator algorithm after clicking 'Generate password'
+     * @param actionEvent event triggering the action
+     */
     public void onGenerateClick(ActionEvent actionEvent) {
         boolean hasCapitals = capitals.isSelected();
         boolean hasNumbers = numbers.isSelected();
@@ -168,6 +201,10 @@ public class NewDatabaseController {
         generatedPassword.setText(pass);
     }
 
+    /**
+     * Passes generated password to 'Password' and 'Repeat password' fields
+     * @param actionEvent event triggering the action
+     */
     public void onUseClick(ActionEvent actionEvent) {
         String password = generatedPassword.getText();
         if(password.isEmpty()) {
@@ -177,7 +214,10 @@ public class NewDatabaseController {
         passwordRepeatField.setText(password);
     }
 
-
+    /**
+     * Handles dictionary attack check
+     * @param actionEvent event triggering the dictionary attack check
+     */
     public void onDictClick(ActionEvent actionEvent) {
         String pass = passwordField.getText();
         if(pass.isEmpty()) {
@@ -219,6 +259,10 @@ public class NewDatabaseController {
         }
     }
 
+    /**
+     * Handles 'Password strength' bar
+     * @param password password in the 'Password' field
+     */
     public void passwordStrengthBarController(String password) {
         double passStrength = 0.0;
         double lengthFactor = 1.0;

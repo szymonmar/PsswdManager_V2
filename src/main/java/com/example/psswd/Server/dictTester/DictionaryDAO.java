@@ -11,11 +11,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class DictionaryDAOFactory {
+/**
+ * Class implementing dictionary attack test functions & handling database
+ */
+public class DictionaryDAO {
     /**
      * DictionaryDAOFactory instance
      */
-    private static DictionaryDAOFactory dictionaryDAOFactoryInstance;
+    private static DictionaryDAO dictionaryDAOInstance;
 
     /**
      * Data source
@@ -26,11 +29,11 @@ public class DictionaryDAOFactory {
      * Creates and returns DictionaryDAOFactory instance
      * @return DictionaryDAOFactory instance
      */
-    public static DictionaryDAOFactory getInstance() {
-        if (dictionaryDAOFactoryInstance == null) {
-            dictionaryDAOFactoryInstance = new DictionaryDAOFactory();
+    public static DictionaryDAO getInstance() {
+        if (dictionaryDAOInstance == null) {
+            dictionaryDAOInstance = new DictionaryDAO();
         }
-        return dictionaryDAOFactoryInstance;
+        return dictionaryDAOInstance;
     }
 
     /**

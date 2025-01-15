@@ -1,10 +1,9 @@
 package com.example.psswd.Server;
 
-import com.example.psswd.Server.dictTester.DictionaryDAOFactory;
+import com.example.psswd.Server.dictTester.DictionaryDAO;
 
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.io.File;
 
@@ -28,9 +27,9 @@ public class Main {
             }
         }
 
-        DictionaryDAOFactory dictionaryDAOFactory = DictionaryDAOFactory.getInstance();
+        DictionaryDAO dictionaryDAO = DictionaryDAO.getInstance();
         try {
-            dictionaryDAOFactory.establishConnection();
+            dictionaryDAO.establishConnection();
         } catch(Exception exception) {
             System.out.println("Błąd podczas inicjalizacji słownika!");
         }

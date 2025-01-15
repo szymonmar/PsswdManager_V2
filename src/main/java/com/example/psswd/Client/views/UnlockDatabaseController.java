@@ -20,32 +20,36 @@ import java.io.IOException;
 public class UnlockDatabaseController {
 
     /**
-     * Pole tekstowe do wpisania hasła
+     * Text field for password
      */
     @FXML
     private PasswordField passwordField;
 
     /**
-     * Pole tekstowe do wpisania loginu
+     * Text field for username
      */
     @FXML
     private TextField loginField;
+
     /**
-     * Zmienna przechowująca wpisane hasło
+     * Holds password entered in passwordField
      */
     private SimpleStringProperty unlockPassword;
 
     /**
-     * Zmienna przechowująca wpisany login
+     * Holds username entered in loginField
      */
     private SimpleStringProperty unlockLogin;
 
-
+    /**
+     * True if logged in, false if not
+     */
     private boolean loggedIn = false;
 
     /**
-     * Funkcja ustawia zmienną unlockPassword na wartość podaną w argumencie
-     * @param unlockPassword hasło do ustawienia [SimpleStringProperty]
+     * Setter for login credentials
+     * @param unlockPassword password
+     * @param unlockLogin username
      */
     public void setUnlockPassword(SimpleStringProperty unlockPassword, SimpleStringProperty unlockLogin) {
         this.unlockPassword = unlockPassword;
@@ -53,8 +57,8 @@ public class UnlockDatabaseController {
     }
 
     /**
-     * Funkcja do zamykania okna wprowadzania hasła po kliknięciu przycisku "CANCEL"
-     * @param actionEvent event wywołujący funkcję (kliknięcie CANCEL) [ActionEvent]
+     * Closes the window after clicking 'Cancel'
+     * @param actionEvent event triggering the action
      */
     @FXML
     private void onCancelClick(ActionEvent actionEvent) {
@@ -62,8 +66,9 @@ public class UnlockDatabaseController {
     }
 
     /**
-     * Funkcja ustawiająca zmienną przechowującą hasło na wpisaną wartość po kliknięciu "UNLOCK"
-     * @param actionEvent event wywołujący funkcję (kliknięcie UNLOCK) [ActionEvent]
+     * Sends log in request and log in data to the server,
+     * sets loggedIn to true if log in successful, false if not
+     * @param actionEvent event triggering the function
      */
     @FXML
     private void onUnlockClick(ActionEvent actionEvent) {
@@ -74,6 +79,7 @@ public class UnlockDatabaseController {
         LoginCredentials loginCredentials = new LoginCredentials(unlockLogin.get(), unlockPassword.get());
         // pobranie instancji połączenia
         ConnectionHandler connectionHandlerInstance = ConnectionHandler.getInstance();
+        connectionHandlerInstance.establishConnection();
         // przesłanie request i danych logowania
         connectionHandlerInstance.sendObjectToServer(new Request("login"));
         connectionHandlerInstance.sendObjectToServer(loginCredentials);
@@ -84,6 +90,7 @@ public class UnlockDatabaseController {
         if(reply.getRequest().equals("success")) {
             loggedIn = true;
         } else {
+            loggedIn = true;
             AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.ERROR);
             alertBuilder
                     .setTitle("Error")
@@ -96,6 +103,10 @@ public class UnlockDatabaseController {
         SceneController.destroyStage(actionEvent);
     }
 
+    /**
+     * Getter for isLoggedIn
+     * @return true if user is logged in, false if not
+     */
     public boolean isLoggedIn() {
         return loggedIn;
     }

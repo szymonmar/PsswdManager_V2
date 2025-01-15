@@ -4,45 +4,43 @@ import java.io.Serializable;
 import java.util.Arrays;
 
 /**
- * Klasa przechowująca informacje o bazie danych potrzebne do odkodowania i zakodowania jej
+ * Class representing Info data set used for encrypting / decrypting
  */
 public class Info  implements Serializable {
 
     private static final long serialVersionUID = 2137420;
 
     /**
-     * Nazwa bazy danych
+     * Database name (username)
      */
     private String name;
 
     /**
-     * Challenge - zakodowana nazwa potrzebna do sprawdzania poprawności hasła
+     * Challenge - encrypted name used to check the password
      */
     private byte[] challenge;
 
     /**
-     * Sól - losowe dane dodawane do hasła przed hashowaniem
+     * Salt - random data added to password before hashing
      */
     private byte[] salt;
 
     /**
-     * Zwraca nazwę bazy danych
-     * @return nazwa bazy danych
+     * @return database name (username)
      */
     public String getName() {
         return name;
     }
 
     /**
-     * Ustawia nazwę bazy danych
-     * @param name nazwa bazy danych do ustawienia [String]
+     * Sets database name
+     * @param name database name (username)
      */
     public void setName(String name) {
         this.name = name;
     }
 
     /**
-     * Zwraca challenge
      * @return challenge
      */
     public byte[] getChallenge() {
@@ -50,24 +48,23 @@ public class Info  implements Serializable {
     }
 
     /**
-     * Ustawia challenge
-     * @param challenge challenge do ustawienia [ byte[] ]
+     * Sets challenge
+     * @param challenge challenge
      */
     public void setChallenge(byte[] challenge) {
         this.challenge = challenge;
     }
 
     /**
-     * Zwraca sól
-     * @return sól
+     * @return salt
      */
     public byte[] getSalt() {
         return salt;
     }
 
     /**
-     * Ustawia sól
-     * @param salt sól do ustawienia [ byte[] ]
+     * Sets salt
+     * @param salt salt
      */
     public void setSalt(byte[] salt) {
         this.salt = salt;

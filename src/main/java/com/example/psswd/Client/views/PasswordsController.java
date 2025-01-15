@@ -136,8 +136,7 @@ public class PasswordsController implements Initializable {
                                                 AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.ERROR);
                                                 alertBuilder
                                                         .setTitle("Error")
-                                                        .setHeaderText("Failed to decrypt password.")
-                                                        .setException(exception);
+                                                        .setHeaderText("Failed to decrypt password.");
                                                 alertBuilder.getAlert().showAndWait();
                                                 return;
                                             }
@@ -226,14 +225,15 @@ public class PasswordsController implements Initializable {
             stage.setTitle("Edit password");
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setScene(scene);
+            stage.setResizable(false);
             stage.showAndWait();
         } catch (Exception exception) {
-        AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.ERROR);
-        alertBuilder
+            exception.printStackTrace();
+            AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.ERROR);
+            alertBuilder
                 .setTitle("Error")
-                .setHeaderText("Failed to edit password.")
-                .setException(exception);
-        alertBuilder.getAlert().showAndWait();
+                .setHeaderText("Failed to edit password.");
+            alertBuilder.getAlert().showAndWait();
         } finally {
             update();
         }
@@ -288,6 +288,7 @@ public class PasswordsController implements Initializable {
         stage.setTitle("Add password");
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setScene(scene);
+        stage.setResizable(false);
         stage.showAndWait();
         update();
     }
@@ -303,13 +304,13 @@ public class PasswordsController implements Initializable {
         Request reply = (Request) connectionHandler.readObjectFromServer();
         if(reply.getRequest().equals("success")) {
             try {
-                SceneController.setScene(actionEvent, "database-selector-view.fxml");
+                connectionHandler.closeConnection();
+                SceneController.setScene(actionEvent, "hello-view.fxml");
             } catch (Exception exception) {
                 AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.ERROR);
                 alertBuilder
                         .setTitle("Error")
-                        .setHeaderText("Fatal error.")
-                        .setException(exception);
+                        .setHeaderText("Fatal error.");
                 alertBuilder.getAlert().showAndWait();
             }
         } else {
@@ -333,17 +334,18 @@ public class PasswordsController implements Initializable {
             stage.setTitle("Account settings");
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setScene(scene);
+            stage.setResizable(false);
             stage.showAndWait();
             if(controller.isAccDeleted()) {
-                SceneController.setScene(actionEvent, "database-selector-view.fxml");
+                SceneController.setScene(actionEvent, "hello-view.fxml");
                 return;
             }
         } catch (Exception exception) {
+            exception.printStackTrace();
             AlertBuilder alertBuilder = new AlertBuilder(Alert.AlertType.ERROR);
             alertBuilder
                     .setTitle("Error")
-                    .setHeaderText("Failed to edit account.")
-                    .setException(exception);
+                    .setHeaderText("Failed to edit account.");
             alertBuilder.getAlert().showAndWait();
         }
         update();
@@ -357,11 +359,12 @@ public class PasswordsController implements Initializable {
         FXMLLoader fxmlLoader = new FXMLLoader(SceneController.class.getResource("csv-dialog.fxml"));
         Parent parent = fxmlLoader.load();
 
-        Scene scene = new Scene(parent, 420, 450);
+        Scene scene = new Scene(parent, 430, 450);
         Stage stage = new Stage();
         stage.setTitle("CSV");
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setScene(scene);
+        stage.setResizable(false);
         stage.showAndWait();
         update();
     }

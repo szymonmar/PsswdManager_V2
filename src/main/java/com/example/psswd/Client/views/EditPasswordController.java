@@ -33,33 +33,94 @@ import java.util.Random;
 import java.util.ResourceBundle;
 
 /**
- * Klasa obsługująca edycję wpisu w bazie danych z GUI
+ * FXML controller for 'Edit password' window
  */
 public class EditPasswordController implements Initializable {
+
     /**
-     * parametr z nazwą hasła
+     * Holds name of the selected password entity
      */
     private StringProperty passwordName = new SimpleStringProperty();
+
     /**
-     * parametr z url hasła
+     * Holds url of the selected password entity
      */
     private StringProperty passwordUrl = new SimpleStringProperty();
+
     /**
-     * parametr z hasłem
+     * Holds password of the selected password entity
      */
     private StringProperty passwordText = new SimpleStringProperty();
+
     /**
-     * parametr z id hasła
+     * Holds id of the selected password entity
      */
     private IntegerProperty passwordId = new SimpleIntegerProperty();
 
+    /**
+     * Password strength progress bar
+     */
     @FXML
     private ProgressBar progressBar;
 
     /**
-     * Konstruktor kontrolera widoku edycji hasła
-     * @param passwordId id hasła które będzie edytowane
-     * @param password obiekt typu Password który będzie edytowany
+     * Password text field
+     */
+    @FXML
+    private TextField passwordField;
+
+    /**
+     * URL text field
+     */
+    @FXML
+    private TextField urlField;
+
+    /**
+     * Name text field
+     */
+    @FXML
+    private TextField nameField;
+
+    /**
+     * Password length slider for password generator
+     */
+    @FXML
+    private Slider slider;
+
+    /**
+     * Label displaying number of characters selected with the slider
+     */
+    @FXML
+    private Label numOfCharacters;
+
+    /**
+     * 'Capital letters' checkbox for generator
+     */
+    @FXML
+    private CheckBox capitals;
+
+    /**
+     * 'Numbers' checkbox for generator
+     */
+    @FXML
+    private CheckBox numbers;
+
+    /**
+     * 'Special symbols' checkbox for generator
+     */
+    @FXML
+    private CheckBox symbols;
+
+    /**
+     * Text field displaying generated password
+     */
+    @FXML
+    private TextField generatedPassword;
+
+    /**
+     * Creates new EditPasswordController with properties from selected password entity
+     * @param passwordId id of the selected password entity
+     * @param password Password object associated with te entity to be edited
      * @throws InvalidAlgorithmParameterException
      * @throws NoSuchPaddingException
      * @throws IllegalBlockSizeException
@@ -73,6 +134,13 @@ public class EditPasswordController implements Initializable {
         this.passwordUrl.set(password.getUrl());
         this.passwordText.set(password.getDecryptedPassword());
     }
+
+    /**
+     * Runs once when Edit Password window is opened,
+     * sets up the controller
+     * @param url
+     * @param resourceBundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         onPasswordFieldChange(passwordText.get());
@@ -90,48 +158,10 @@ public class EditPasswordController implements Initializable {
         });
     }
 
-    /**
-     * Pole tekstowe do wpisania hasła
-     */
-    @FXML
-    private TextField passwordField;
-
-
 
     /**
-     * Pole tekstowe linku, który będzie korespondował z zapisanym hasłem, np. facebook.com
-     */
-    @FXML
-    private TextField urlField;
-
-
-    /**
-     * Pole tekstowy nazwy, pod którą chcemy zapisać hasło, np. Facebook
-     */
-    @FXML
-    private TextField nameField;
-
-    @FXML
-    private Slider slider;
-
-    @FXML
-    private Label numOfCharacters;
-
-    @FXML
-    private CheckBox capitals;
-
-    @FXML
-    private CheckBox numbers;
-
-    @FXML
-    private CheckBox symbols;
-
-    @FXML
-    private TextField generatedPassword;
-
-    /**
-     * Funkcja do zapisania zmian we wpisie bazy danych po kliknięciu przycisku "SAVE"
-     * @param actionEvent event wywołujący funkcję (kliknięcie SAVE) [ActionEvent]
+     * Sends request to change password entity data and passes new data to the server
+     * @param actionEvent event that triggers the function
      */
     public void onSaveClick(ActionEvent actionEvent) {
         String name = nameField.getText();
@@ -181,10 +211,18 @@ public class EditPasswordController implements Initializable {
         }
     }
 
+    /**
+     * Function triggered by the listener on 'Password' field
+     * @param newValue password in the 'Password' field
+     */
     public void onPasswordFieldChange(String newValue) {
         passwordStrengthBarController(newValue);
     }
 
+    /**
+     * Runs password generator algorithm after clicking 'Generate password'
+     * @param actionEvent event triggering the action
+     */
     public void onGenerateClick(ActionEvent actionEvent) {
         boolean hasCapitals = capitals.isSelected();
         boolean hasNumbers = numbers.isSelected();
@@ -197,6 +235,10 @@ public class EditPasswordController implements Initializable {
         generatedPassword.setText(pass);
     }
 
+    /**
+     * Passes generated password to 'Password' and 'Repeat password' fields
+     * @param actionEvent event triggering the action
+     */
     public void onUseClick(ActionEvent actionEvent) {
         String password = generatedPassword.getText();
         if(password.isEmpty()) {
@@ -206,15 +248,18 @@ public class EditPasswordController implements Initializable {
     }
 
     /**
-     * Funkcja do zamykania okna dodawania hasła po kliknięciu przycisku "CANCEL"
-     * @param actionEvent event wywołujący funkcję (kliknięcie CANCEL) [ActionEvent]
+     * Closes the window after clicking 'Cancel'
+     * @param actionEvent event triggering the action
      */
     public void onCancelClick(ActionEvent actionEvent) {
         SceneController.destroyStage(actionEvent);
     }
 
 
-
+    /**
+     * Handles dictionary attack check
+     * @param actionEvent event triggering the dictionary attack check
+     */
     public void onDictClick(ActionEvent actionEvent) {
         String pass = passwordField.getText();
         if(pass.isEmpty()) {
@@ -259,6 +304,10 @@ public class EditPasswordController implements Initializable {
 
     }
 
+    /**
+     * Handles 'Password strength' bar
+     * @param password password in the 'Password' field
+     */
     public void passwordStrengthBarController(String password) {
         double passStrength = 0.0;
         double lengthFactor = 1.0;

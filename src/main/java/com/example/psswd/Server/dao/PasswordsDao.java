@@ -5,33 +5,32 @@ import com.example.psswd.Server.model.Password;
 import java.util.List;
 
 /**
- * Interfejs reprezentujący kontrakt definiujący operacje dostępu do danych
- * dotyczących zapisanych haseł
+ * Contract defining methods that access passwords table in the database
  */
 public interface PasswordsDao {
 
     /**
-     * Zwraca listę wpisów w bazie danych haseł
-     * @return lista wpisów z hasłami
+     * Gets list of passwords from the database
+     * @return list of passwords
      */
     public List<Password> getPasswords();
 
     /**
-     * Funkcja obsługująca proces dodawania wpisu do bazy danych
-     * @param password wpis do dodania [Password]
+     * Adds new password to the database
+     * @param password new password entity
      */
     public void insertPassword(Password password);
 
     /**
-     * Funkcja obsługująca proces aktualizacji danych we wpisie
-     * @param id id wpisu do modyfikacji [int]
-     * @param password zmodyfikowany wpis [Password]
+     * Updates password entity in the database
+     * @param id id of the password to update
+     * @param password modified password entity
      */
     public void updatePassword(int id, Password password);
 
     /**
-     * Funkcja obsługująca proces usuwania wpisu z bazy danych
-     * @param id id wpisu do usunięcia [int]
+     * Deletes password from the database
+     * @param id id of the password to delete
      */
     public void deletePassword(int id);
 }

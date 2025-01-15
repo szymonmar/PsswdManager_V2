@@ -8,19 +8,19 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-/** klasa obsługująca połączenie z serwerem */
+/** Class handling server connection */
 public class ConnectionHandler {
 
-    /** instancja */
+    /** Connection handler */
     private static ConnectionHandler connectionHandlerInstance;
-    /** strumień wyjścia z klienta do serwera */
+    /** Output stream for sending objects to server ( client -> server ) */
     private static ObjectOutputStream objectOutput;
-    /** strumień wejścia z serwera do klienta */
+    /** Input stream for reading objects from server ( server -> client ) */
     private static ObjectInputStream objectInput;
 
     private  ConnectionHandler(){}
 
-    /** zwraca instancję connectionHandlera */
+    /** Returns connection handler instance */
     public static ConnectionHandler getInstance() {
         if(connectionHandlerInstance == null) {
             connectionHandlerInstance = new ConnectionHandler();
@@ -28,7 +28,7 @@ public class ConnectionHandler {
         return connectionHandlerInstance;
     }
 
-    /** funkcja do tworzenia połączenia z serwerem */
+    /** Establishes connection between client and server */
     public void establishConnection() {
         try {
             Socket socket = new Socket("localhost", 2137);
@@ -44,8 +44,8 @@ public class ConnectionHandler {
         }
     }
 
-    /** funkcja wysyłająca zserializowany obiekt na serwer
-     * @param object - obiekt do wysłania
+    /** Sends object to the server via objectOutput
+     * @param object object to be sent
      */
     public void sendObjectToServer(Object object) {
         try {
@@ -55,8 +55,8 @@ public class ConnectionHandler {
         }
     }
 
-    /** funkcja odczytująca zserializowany obiekt wysłany przez serwer
-     * @return przysłany obiekt
+    /** Receives object from the server via objectInput
+     * @return received object
      */
     public Object readObjectFromServer() {
         Object object;
@@ -68,5 +68,12 @@ public class ConnectionHandler {
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /** Closes connection to server - used on logout */
+    public void closeConnection() {
+        objectInput = null;
+        objectOutput = null;
+        connectionHandlerInstance = null;
     }
 }

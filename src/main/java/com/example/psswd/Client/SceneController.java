@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.net.URL;
 
 /**
- * Klasa obsługująca okno programu
+ * Class handling user interface
  */
 public class SceneController {
 
@@ -33,7 +33,7 @@ public class SceneController {
     }
 
     /**
-     * Pobiera i zwraca okno, w którym będziemy rysować scenę
+     * Returns stage for the scene to be set onto
      * @param event event pochodzący z okna, którego zawartość będziemy modyfikować [ActionEvent]
      * @return okno, którego zawartość będziemy modyfikować
      */
@@ -42,8 +42,8 @@ public class SceneController {
     }
 
     /**
-     * Funkcja zamykająca okno
-     * @param event event wywołujący funkcję [ActionEvent]
+     * Closes the window
+     * @param event event triggering window close [ActionEvent]
      */
     public static void destroyStage(ActionEvent event) {
         Node source = (Node)  event.getSource();
