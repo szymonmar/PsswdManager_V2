@@ -38,6 +38,7 @@ public class Main {
         ArrayList<ServerThread> threadList = new ArrayList<>();
         try (ServerSocket serversocket = new ServerSocket(2137)){
             while(true) {
+                System.out.println("Server is ready");
                 Socket socket = serversocket.accept();
                 ServerThread serverThread = new ServerThread(socket, threadList);
                 //starting the thread
